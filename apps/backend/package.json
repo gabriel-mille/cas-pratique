@@ -110,6 +110,15 @@
         "options": {
           "command": "typeorm migration:revert -d apps/backend/dist/src/database/data-source.js"
         }
+      },
+      "openapi": {
+        "executor": "nx:run-commands",
+        "dependsOn": [
+          "build"
+        ],
+        "options": {
+          "command": "node apps/backend/dist/src/generate-openapi.js apps/frontend/src/shared/api/openapi.json"
+        }
       }
     }
   },
