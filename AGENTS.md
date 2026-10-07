@@ -1,7 +1,7 @@
 # Cas pratique Qualineo – Plans d'actions
 
 Test technique : implémenter la gestion des plans d'actions de Qualineo (logiciel qualité, secteur santé).
-Énoncé complet : `Cas pratique Qualineo.pdf` (non versionné). Spécification traduite : `docs/specs/` (à rédiger, étape 1).
+Énoncé complet : `Cas pratique Qualineo.pdf` (non versionné). Spécification traduite : `docs/specs/`.
 
 Critère d'évaluation annoncé : **la réflexion et la conscience des problématiques comptent plus que l'implémentation**.
 Toute décision sur un point ambigu de l'énoncé doit être tracée dans `docs/decisions.md` (contexte, choix, alternatives).
@@ -12,6 +12,19 @@ Toute décision sur un point ambigu de l'énoncé doit être tracée dans `docs/
 - Si une information n'est pas trouvée ou pas vérifiable : **le dire explicitement** et demander, plutôt que supposer.
 - Distinguer dans les explications ce qui est « sourcé » de ce qui est « pratique courante / choix du projet ».
 - Ne pas trancher seul une règle métier absente de l'énoncé : la proposer, puis la consigner dans `docs/decisions.md` une fois validée.
+
+## Règle de travail n°2 : ne pas réinventer la roue
+
+- Avant chaque tâche, chercher si une solution existante et fiable couvre déjà le besoin : module officiel du framework, bibliothèque maintenue et reconnue, générateur Nx, pattern documenté.
+- Critères de fiabilité : source officielle ou très adoptée, maintenance active, licence compatible, version stable (pas de 0.0.x).
+- Si rien ne convient, l'écrire et justifier le développement maison dans `docs/decisions.md`.
+
+## Règle de travail n°3 : identifier et suivre les normes
+
+- Repérer les normes et référentiels applicables au domaine (logiciel qualité en santé) : sécurité, qualité, données personnelles, données de santé, accessibilité, etc.
+- Les recenser dans `docs/compliance.md`, avec leur source, les exigences qui concernent le projet et leur statut : **appliqué**, **prévu** (noté, non implémenté dans ce test) ou **hors périmètre**.
+- Ce qui n'est pas demandé par l'énoncé est au minimum noté et prévu dans la conception, même s'il n'est pas implémenté.
+- Vérifier le respect des exigences marquées « appliqué » (tests ou relecture).
 
 ## Ordre de réalisation
 
