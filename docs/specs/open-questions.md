@@ -28,6 +28,8 @@ La table ci-dessous est conservée comme trace du raisonnement.
 
 ## Questions issues du recensement des normes (`docs/compliance.md`)
 
+Tranchées le 2026-10-07 : propositions retenues, voir D15 à D22.
+
 | # | Question | Proposition | Source |
 |---|---|---|---|
 | Q20 | Niveau de sécurité visé | ASVS **L2**, écarts justifiés par écrit (dont la MFA, prévue mais non implémentée) | ASVS 5.0 « most applications should be striving to achieve this level » ; CNIL 2022-100 §11 |

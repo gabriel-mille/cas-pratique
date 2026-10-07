@@ -23,7 +23,7 @@ Les URLs sont dans `docs/references.md`.
 
 ### OWASP ASVS 5.0.0 (mai 2025) [S]
 - L'ASVS ne fixe pas de niveau obligatoire : « an organization should analyze its risks ». Pour le niveau L2, elle précise : « most applications should be striving to achieve this level ».
-- Cible proposée : **L2**, les écarts étant justifiés par écrit (❓ Q20).
+- Cible retenue : **L2**, les écarts étant justifiés par écrit (D15).
 
 | Exigence | Niveau | Statut | Mise en œuvre / remarque |
 |---|---|---|---|
@@ -31,31 +31,31 @@ Les URLs sont dans `docs/references.md`.
 | 8.2.1 Accès par fonction | L1 | ✅ | Matrice `permissions.md` |
 | 8.2.2 Accès par donnée (IDOR/BOLA) | L1 | ✅ | Toute requête est filtrée par l'organisation du membre connecté ; un id d'une autre organisation renvoie 404 |
 | 8.4.1 Contrôles inter-organisations (cross-tenant) | L2 | ✅ | Idem ; tests dédiés |
-| 8.3.2 Changement de droits appliqué immédiatement | L3 | ✅ | Le rôle est relu en base à chaque requête (Q21) |
+| 8.3.2 Changement de droits appliqué immédiatement | L3 | ✅ | Le rôle est relu en base à chaque requête (D16) |
 | 2.2.1, 2.2.2 Validation par liste autorisée, côté serveur | L1 | ✅ | DTO + `ValidationPipe` (`whitelist`) puis invariants du domaine |
 | 2.3.1 Respect de l'ordre des étapes | L1 | ✅ | Machine à états (`state-transitions.md`) |
 | 2.3.3 Transactions | L2 | ✅ | Changement d'état et historique écrits dans la même transaction |
 | 6.2.1 Mot de passe ≥ 8 caractères, 15 « strongly recommended » | L1 | ✅ | 15 (D13) |
 | 6.2.5 Aucune règle de composition | L1 | ✅ | D13 |
 | 6.2.9 Au moins 64 caractères acceptés | L2 | ✅ | D13 |
-| 6.2.10 Pas de rotation périodique | L2 | ✅ | D13 ; divergence ANSSI/CNIL pour les admins : ❓ Q24 |
-| 6.2.4 Refuser les mots de passe les plus courants | **L1** | ❓ Q23 | D13 le classait « amélioration future », mais c'est une exigence L1 |
+| 6.2.10 Pas de rotation périodique | L2 | ✅ | D19 (divergence ANSSI/CNIL notée) |
+| 6.2.4 Refuser les mots de passe les plus courants | **L1** | ✅ | D18 |
 | 6.2.12 Vérifier contre les mots de passe ayant fuité | L2 | 🟨 | Service externe nécessaire |
-| 6.1.1, 6.3.1 Anti brute force, sans blocage malveillant | **L1** | ❓ Q22 | Proposition : `@nestjs/throttler` (module officiel) |
+| 6.1.1, 6.3.1 Anti brute force, sans blocage malveillant | **L1** | ✅ | `@nestjs/throttler` (D17) |
 | 6.3.2 Pas de compte par défaut | L1 | ✅ | Le premier admin est créé à l'inscription |
-| 6.3.3 Authentification multifacteur | L2 | 🟨 | Écart justifié par écrit (❓ Q20) |
+| 6.3.3 Authentification multifacteur | L2 | 🟨 | Écart justifié par écrit (D15) |
 | 6.3.8 Ne pas révéler si un compte existe | L3 | ✅ | Message générique (D13). L'inscription révèle qu'un email est pris : écart connu |
 | 11.4.2 Hachage lent | – | ✅ | scrypt (D13) |
 | 7.2.1, 7.2.4 Jeton vérifié côté serveur, nouveau jeton à chaque connexion | L1 | ✅ | `@nestjs/jwt` |
-| 7.4.1 La déconnexion invalide le jeton | **L1** | ❓ Q21 | Un JWT reste valide jusqu'à expiration |
-| 7.4.2 Couper les sessions d'un compte désactivé | **L1** | ❓ Q21 | Membre retiré (D9) |
+| 7.4.1 La déconnexion invalide le jeton | **L1** | ✅ | `sessionsValidAfter` par utilisateur (D16) |
+| 7.4.2 Couper les sessions d'un compte désactivé | **L1** | ✅ | Retrait d'un membre → révocation (D16) |
 | 7.3.1, 7.3.2 Expiration après inactivité et durée maximale | L2 | ✅ | Durée de vie courte du jeton |
-| 7.4.5 Un admin termine les sessions d'un membre | L2 | 🟨 | Couvert si Q21 est retenue |
+| 7.4.5 Un admin termine les sessions d'un membre | L2 | 🟨 | Mécanisme D16 prêt ; pas d'écran dédié |
 | 3.3.1–3.3.4 Cookie `__Host-`, Secure, HttpOnly, SameSite | L1-L2 | ✅ | D13 |
 | 3.4.1–3.4.6 HSTS, CSP, nosniff, Referrer-Policy, frame-ancestors | L1-L2 | ✅ | `helmet` (recommandé par la doc NestJS) |
 | 3.4.2 CORS : origine fixe | L1 | ✅ | Origine du frontend uniquement |
 | 3.5.1–3.5.3 Anti-CSRF, pas de GET qui modifie | L1 | ✅ | SameSite + JSON (préflight CORS) ; GET en lecture seule |
-| 16.2.1, 16.3.1, 16.3.2 Journaliser les authentifications et les refus d'accès | L2 | ❓ Q27 | |
+| 16.2.1, 16.3.1, 16.3.2 Journaliser les authentifications et les refus d'accès | L2 | ✅ | D22 |
 | 16.2.5 Pas d'identifiants dans les logs | L2 | ✅ | |
 | 16.4.2 Logs non modifiables | L2 | ⬜ | Relève de l'infrastructure d'hébergement |
 | 16.5.1 Erreur générique, sans stack trace | L2 | ✅ | Filtre d'exceptions NestJS |
@@ -70,9 +70,9 @@ Il sert de liste de contrôle en relecture. Les points les plus exposés ici son
 
 ### ANSSI [S]
 **Guide « Authentification multifacteur et mots de passe » (2021)**
-- R10 (limiter les tentatives) et R14 (ne rien dire de l'échec) : voir Q22 et D13.
+- R10 (limiter les tentatives) et R14 (ne rien dire de l'échec) : voir D17 et D13.
 - R1 (MFA) : 🟨.
-- R25 (expiration imposée pour les comptes à privilèges) : ❓ Q24.
+- R25 (expiration imposée pour les comptes à privilèges) : D19.
 
 **Guide « Sécurité côté navigateur » (v2.0, 2021)**
 - R30 à R33 (cookies HttpOnly, Secure, SameSite) : ✅.
@@ -107,9 +107,9 @@ Il sert de liste de contrôle en relecture. Les points les plus exposés ici son
   - copier-coller non bloqué ;
   - sel aléatoire d'au moins 128 bits ;
   - message d'échec non informatif.
-- §37, refuser les mots de passe courants : ❓ Q23.
+- §37, refuser les mots de passe courants : D18.
 - §11 : pour des données de santé, des mesures plus fortes comme la MFA sont nécessaires : 🟨.
-- §54 : le renouvellement est possible pour les comptes à privilèges : ❓ Q24.
+- §54 : le renouvellement est possible pour les comptes à privilèges : D19.
 
 **Délibération 2021-122 sur la journalisation**
 - Tracer la création, la consultation, la modification et la suppression, avec l'auteur, la date et la donnée concernée.
@@ -123,7 +123,7 @@ Source : note du ministère de la Santé de 2019, lue [S]. Le texte sur Légifra
   1. les données sont recueillies lors d'activités de prévention, de diagnostic ou de soins ;
   2. elles sont hébergées pour le compte du patient ou du professionnel qui les a produites.
 - Une application qualité n'est a priori pas concernée [D].
-- **Risque** : des données patients saisies dans les descriptions libres, alors que la note précise que le régime s'applique « même pour une partie seulement » : ❓ Q26.
+- **Risque** : des données patients saisies dans les descriptions libres, alors que la note précise que le régime s'applique « même pour une partie seulement » : ✅ D21.
 
 ### ANS : PGSSI-S et référentiel d'identification électronique
 - Leur champ d'application à un logiciel non clinique **n'a pas pu être vérifié** (site inaccessible aux outils).
@@ -151,9 +151,9 @@ Source : note du ministère de la Santé de 2019, lue [S]. Le texte sur Légifra
 |---|---|---|
 | État d'avancement actualisé | ✅ | Cycle des 4 états, historique |
 | Plan structuré, unique | ✅ | Plan → actions |
-| Pilote par action | ❓ Q25 | L'assignation avait été reportée (D10) |
-| Calendrier / échéance | ❓ Q25 | |
-| Indicateur de suivi + cible, évaluation de l'efficacité | ❓ Q25 | « Terminé » ne dit pas si l'action a été efficace |
+| Pilote par action | 🟨 D20 | L'assignation avait été reportée (D10) |
+| Calendrier / échéance | 🟨 D20 | |
+| Indicateur de suivi + cible, évaluation de l'efficacité | 🟨 D20 | « Terminé » ne dit pas si l'action a été efficace |
 | Origine de l'action (EI, audit, indicateur…) | 🟨 | [D] |
 | Bilan annuel | 🟨 | Dates de création et de fin déjà disponibles |
 
@@ -165,7 +165,7 @@ Aucune source ne fixe de liste d'états : la HAS demande seulement un « état d
 
 ### ISO 9001:2015 [S2]
 - Norme payante, non lue.
-- §6.2.2 (qui, quoi, quand, comment évaluer) et §10.2.1.d (revoir l'efficacité) : rejoignent la HAS, voir Q25.
+- §6.2.2 (qui, quoi, quand, comment évaluer) et §10.2.1.d (revoir l'efficacité) : rejoignent la HAS, voir D20.
 - §10.2.2 et §7.5.3 (conserver les preuves, les protéger contre l'altération) : ✅ avec l'historique et la suppression logique.
 
 ### ISO 7101:2023 (management de la qualité en santé) [S2]
@@ -211,4 +211,4 @@ Aucune source ne fixe de liste d'états : la HAS demande seulement un « état d
 ---
 
 ## Questions ouvertes issues de ce recensement
-Voir `docs/specs/open-questions.md`, questions Q20 à Q27.
+Questions Q20 à Q27 (`docs/specs/open-questions.md`), tranchées en D15 à D22.
