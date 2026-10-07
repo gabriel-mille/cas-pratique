@@ -168,3 +168,43 @@ Les numéros `Qn` renvoient à `docs/specs/open-questions.md`. Les URLs des sour
 - Ne jamais journaliser de mot de passe ni d'identifiant non reconnu.
 - Sources : ASVS 16.3.1 et 16.3.2, CNIL 2021-122, CNIL 2022-100 §64.
 - Le stockage séparé et non modifiable des logs relève de l'infrastructure, hors périmètre.
+
+## Choix techniques (règle n°2, détail dans `docs/stack.md`)
+
+### D23 – Rester en NestJS 11 (S1)
+- Contexte : NestJS 12 est sorti le 2026-08-27, mais le projet fourni est en 11.1.
+- Choix : rester en 11, la stack fournie par l'énoncé. Les paquets dont la dernière version exige Nest 12 sont fixés en 11 (`@nestjs/swagger@11`, `@nestjs/cqrs@11`).
+- Alternative écartée : migrer en 12 (sessions côté serveur via `@nestjs/authentication`). Cela n'apporte rien au périmètre ; c'est noté comme évolution.
+
+### D24 – Code maison justifié (S3, S4, verrou optimiste)
+- **Verrou optimiste** : TypeORM ne vérifie la version qu'à la lecture (`OptimisticLockVersionMismatchError` n'existe que dans `SelectQueryBuilder`, vérifié dans `node_modules`). On écrit `UPDATE … WHERE id = :id AND version = :v` et on contrôle `affected`.
+- **If-Match / 412 / 428** : ni Express ni NestJS ne gèrent `If-Match`. Le seul paquet npm trouvé, `precond`, date de 2014. On écrit un intercepteur.
+- **Cycle de vie** : une table de transitions dans le domaine plutôt que xstate. C'est un choix, pas un manque d'outil : 4 états, et le domaine reste sans dépendance.
+- **Erreurs HTTP** : un filtre maison au format RFC 9457 plutôt que `nest-problem-details-filter`, peu adopté.
+- **Front, conflit 412** : TanStack Query gère le cache ; il reste à écrire la réaction (recharger, prévenir l'utilisateur).
+
+### D25 – CSRF (S2)
+- Choix : cookie `SameSite=Strict`, vérification de l'en-tête `Origin` sur les requêtes d'écriture, API en JSON uniquement.
+- Source : OWASP *Cross-Site Request Forgery Prevention Cheat Sheet*.
+- Alternative écartée : `csrf-csrf` (proposé par la doc NestJS v11), une dépendance de plus sans gain dans notre configuration (front et API sur des origines connues).
+
+### D26 – Chaque scénario de la spec est un test automatique, côté back et côté front
+- Choix : les fichiers `docs/specs/features/*.feature` sont exécutés tels quels avec `@amiceli/vitest-cucumber` 7.0.0 (compatible Vitest 4).
+  - Vérifié le 2026-10-07 : la lecture de `action-lifecycle.feature` en français reconnaît `Contexte`, les 6 `Règle`, `Exemple` et `Plan du Scénario`.
+  - D'après sa doc, la suite échoue si un scénario ou une étape n'a pas d'implémentation. À constater lors de la mise en place.
+- Back : TDD piloté par les scénarios (domaine, puis cas d'usage, puis e2e).
+- Front : tests d'intégration (Testing Library + MSW + axe-core) qui implémentent les mêmes scénarios.
+  - Les scénarios qui ne se prouvent pas avec une API simulée (persistance, verrou réel) sont tagués `@back-only` et couverts par le back et les E2E.
+  - Le filtrage par tag n'est pas documenté par l'outil : à vérifier, sinon chaque scénario aura au moins une assertion d'UI côté front.
+- E2E : 2 ou 3 parcours critiques avec Playwright (`@nx/playwright`) contre le vrai back.
+- Sources : Kent C. Dodds (*Testing Trophy*, *How to know what to test*, *When I follow TDD*), Testing Library *Guiding principles*, doc MSW et TanStack Query *Testing*.
+- Alternatives écartées : une matrice de traçabilité tenue à la main (rien n'est vérifié automatiquement) ; `playwright-bdd` pour tout (lent, doublon avec le back).
+
+### D27 – Vérification automatique en local, sans CI (S7, S8)
+- Choix : hooks Git avec husky 9.
+  - `commit-msg` : commitlint (Conventional Commits).
+  - `pre-commit` : le hook global de l'utilisateur s'il existe (gitleaks, lychee), puis `nx affected -t lint test`.
+  - `pre-push` : `nx affected -t lint test build`.
+- Les hooks ne sont jamais contournés (`--no-verify` interdit).
+- Seuils de couverture Vitest à 80 %. La doc Vitest ne recommande aucune valeur ; Dodds et Fowler rappellent que la couverture est un outil, pas un objectif.
+- Alternative écartée : une CI GitHub Actions, jugée inutile pour un test technique.

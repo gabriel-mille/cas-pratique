@@ -143,3 +143,41 @@ Seules sources utilisées pour les règles d'architecture et de convention du pr
 - eslint-plugin-jsx-a11y : https://github.com/jsx-eslint/eslint-plugin-jsx-a11y
 - axe-core : https://github.com/dequelabs/axe-core
 - Testing Library – priorité des requêtes : https://testing-library.com/docs/queries/about/#priority
+
+## Briques réutilisées (`docs/stack.md`)
+### Backend
+- NestJS v11 (doc archivée) : https://docs.nestjs.com/v11/ · authentification : https://docs.nestjs.com/v11/security/authentication · cookies : https://docs.nestjs.com/v11/techniques/cookies
+- NestJS : rate limiting https://docs.nestjs.com/security/rate-limiting · helmet https://docs.nestjs.com/security/helmet · CORS https://docs.nestjs.com/security/cors · CSRF https://docs.nestjs.com/v11/security/csrf
+- NestJS : validation https://docs.nestjs.com/v11/techniques/validation · OpenAPI https://docs.nestjs.com/v11/openapi/introduction · CQRS https://docs.nestjs.com/v11/recipes/cqrs · logger https://docs.nestjs.com/v11/techniques/logger · testing https://docs.nestjs.com/v11/fundamentals/testing · SWC/Vitest https://docs.nestjs.com/recipes/swc
+- OWASP Password Storage Cheat Sheet : https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html
+- OWASP CSRF Prevention Cheat Sheet : https://cheatsheetseries.owasp.org/cheatsheets/Cross-Site_Request_Forgery_Prevention_Cheat_Sheet.html
+- Node.js crypto (scrypt, timingSafeEqual) : https://nodejs.org/api/crypto.html
+- SecLists (listes de mots de passe, MIT) : https://github.com/danielmiessler/SecLists/tree/master/Passwords/Common-Credentials
+- TypeORM : entités https://typeorm.io/docs/entity/entities · migrations https://typeorm.io/docs/migrations/why
+- RFC 9457 Problem Details : https://www.rfc-editor.org/rfc/rfc9457 · RFC 9110 (ETag, If-Match, 412) : https://www.rfc-editor.org/rfc/rfc9110
+- Testcontainers Node (PostgreSQL) : https://node.testcontainers.org/modules/postgresql/
+- esbuild – limitation emitDecoratorMetadata : https://esbuild.github.io/content-types/#typescript-caveats
+### Frontend
+- FSD : React Query https://feature-sliced.design/docs/guides/tech/with-react-query · requêtes API https://feature-sliced.design/docs/guides/examples/api-requests · auth https://feature-sliced.design/docs/guides/examples/auth · layout https://feature-sliced.design/docs/guides/examples/page-layout
+- Steiger : https://github.com/feature-sliced/steiger
+- React Router : https://reactrouter.com/ · TanStack Query : https://tanstack.com/query/latest
+- openapi-typescript : https://openapi-ts.dev/ · zod : https://zod.dev/ · React `useActionState` : https://react.dev/reference/react/useActionState
+- React Aria Components : https://react-spectrum.adobe.com/react-aria/
+- MSW : https://mswjs.io/docs/ · Testing Library : https://testing-library.com/docs/react-testing-library/intro/
+### Outillage
+- Nx : générateur Vitest https://nx.dev/docs/technologies/test-tools/vitest · module boundaries https://nx.dev/docs/features/enforce-module-boundaries
+- commitlint (local setup) : https://commitlint.js.org/guides/local-setup.html · husky : https://typicode.github.io/husky/
+### Tests front et choix complémentaires
+- Kent C. Dodds : https://kentcdodds.com/blog/the-testing-trophy-and-testing-classifications · https://kentcdodds.com/blog/write-tests · https://kentcdodds.com/blog/common-mistakes-with-react-testing-library · https://kentcdodds.com/blog/testing-implementation-details · https://kentcdodds.com/blog/how-to-know-what-to-test · https://kentcdodds.com/blog/when-i-follow-tdd
+- Testing Library – guiding principles : https://testing-library.com/docs/guiding-principles
+- Martin Fowler – TestCoverage : https://martinfowler.com/bliki/TestCoverage.html
+- Vitest : browser mode https://vitest.dev/guide/browser/ · coverage https://vitest.dev/config/coverage
+- TanStack Query – Testing : https://tanstack.com/query/latest/docs/framework/react/guides/testing
+- React Router – Testing : https://reactrouter.com/start/data/testing
+- MSW – best practices : https://mswjs.io/docs/best-practices/structuring-handlers · https://mswjs.io/docs/best-practices/avoid-request-assertions
+- vitest-cucumber : https://github.com/amiceli/vitest-cucumber · langues : https://amiceli.github.io/vitest-cucumber-docs/features/spoken-languages
+- Nx Playwright : https://nx.dev/docs/technologies/test-tools/playwright/introduction · Nx affected : https://nx.dev/docs/features/ci-features/affected
+- Playwright – accessibilité : https://playwright.dev/docs/accessibility-testing
+- eslint-plugin-testing-library : https://github.com/testing-library/eslint-plugin-testing-library · @vitest/eslint-plugin : https://github.com/vitest-dev/eslint-plugin-vitest
+- Vite – CSS Modules : https://vite.dev/guide/features.html · FSD layers : https://feature-sliced.design/docs/reference/layers · React Aria styling : https://react-aria.adobe.com/styling
+- Radix Toast : https://www.radix-ui.com/primitives/docs/components/toast · WCAG 4.1.3 : https://www.w3.org/WAI/WCAG22/Understanding/status-messages.html
