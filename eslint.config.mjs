@@ -34,4 +34,14 @@ export default [
     rules: vitest.configs.recommended.rules,
     languageOptions: { globals: vitest.environments.env.globals },
   },
+  // Scénarios Gherkin (vitest-cucumber) : les assertions vivent dans les étapes, qui sont les blocs de test.
+  {
+    files: ['**/*.feature.spec.ts', '**/*.feature.spec.tsx'],
+    rules: {
+      'vitest/no-standalone-expect': [
+        'error',
+        { additionalTestBlockFunctions: ['Given', 'When', 'Then', 'And', 'But'] },
+      ],
+    },
+  },
 ];
