@@ -100,7 +100,7 @@ Les numéros `Qn` renvoient à `docs/specs/open-questions.md`. Les URLs des sour
   - au moins 64 acceptés ;
   - aucune règle de composition ;
   - pas d'expiration périodique.
-- La liste noire de mots de passe courants exigée par le NIST est une amélioration future, documentée.
+- Refus des mots de passe courants dès la v1 : voir D18.
 - Échec de connexion : message générique, sans révéler si l'email existe (OWASP Authentication).
 - Alternative écartée : le nouveau paquet officiel `@nestjs/authentication`, encore en version 0.0.1 (registre npm, 2026-10).
 
@@ -117,3 +117,54 @@ Les numéros `Qn` renvoient à `docs/specs/open-questions.md`. Les URLs des sour
   - RFC 9110 (« lost update ») et RFC 6585 (428) ;
   - doc PostgreSQL (réévaluation du WHERE en Read Committed).
 - Piège vérifié dans TypeORM 0.3.28 (code installé) : `@VersionColumn` incrémente la version, mais `save()` ne la vérifie pas. D'où l'update conditionnel écrit à la main.
+
+## Normes (`docs/compliance.md`, questions Q20 à Q27)
+
+### D15 – Niveau de sécurité : OWASP ASVS 5.0 niveau L2 (Q20)
+- L'ASVS recommande ce niveau pour la plupart des applications (« most applications should be striving to achieve this level »). Le niveau L1 serait insuffisant pour des données d'établissements de santé.
+- Écart assumé : la MFA (ASVS 6.3.3) n'est pas implémentée dans ce test. Elle est prévue.
+- Mesures compensatoires, conformément à l'exigence de l'ASVS d'un « plan on how the risks around authentication will be mitigated » :
+  - mots de passe d'au moins 15 caractères ;
+  - liste de mots de passe interdits (D18) ;
+  - limitation des tentatives de connexion (D17) ;
+  - sessions courtes et révocables (D16).
+
+### D16 – Révocation des sessions JWT (Q21)
+- Jeton à courte durée de vie.
+- À chaque requête, le serveur relit en base l'appartenance (active ou non, rôle) et une date `sessionsValidAfter`. Les jetons émis avant cette date sont refusés.
+- La déconnexion, le retrait d'un membre et le changement de rôle mettent cette date à jour.
+- Sources :
+  - ASVS 7.4.1 (L1), qui cite « disallowing tokens produced before a per-user date and time » ;
+  - ASVS 7.4.2 (L1) ;
+  - ASVS 8.3.2 (L3).
+- Coût : une lecture en base par requête.
+
+### D17 – Limitation des tentatives de connexion (Q22)
+- `@nestjs/throttler` (module officiel NestJS), par IP et par email.
+- Pas de blocage du compte, pour éviter qu'un tiers bloque un compte volontairement (ASVS 6.3.1).
+- Sources : ASVS 6.1.1 et 6.3.1 (L1), ANSSI R10, CNIL 2022-100 §43.
+
+### D18 – Refus des mots de passe courants (Q23)
+- Appliqué dès la v1, avec une liste publique reconnue. La source de la liste sera vérifiée avant de la choisir (règle n°2).
+- Sources : ASVS 6.2.4 (L1), CNIL §37, NIST 800-63B.
+
+### D19 – Pas d'expiration périodique des mots de passe (Q24)
+- Y compris pour les admins.
+- Sources : NIST 800-63B et ASVS 6.2.10.
+- Divergence notée : l'ANSSI (R25) et la CNIL (§54) permettent l'expiration pour les comptes à privilèges. À revoir si un client l'exige.
+
+### D20 – Champs HAS d'une action : prévus, non implémentés (Q25)
+- Champs concernés : pilote, échéance, indicateur et cible, évaluation de l'efficacité, origine de l'action.
+- Ils sont attendus par la HAS (fiche pédagogique 2025, critères 2.4-06 et 2.4-07) et par l'ISO 9001 (§6.2.2, §10.2, sources secondaires). L'énoncé ne les demande pas.
+- Le modèle `Action` doit pouvoir les accueillir sans refonte.
+
+### D21 – Données patients dans les textes libres (Q26)
+- Le formulaire d'action affiche un avertissement : ne pas saisir de données patients.
+- Raison : la note DSSIS de 2019 dit que le régime HDS s'applique dès qu'une fonctionnalité porte sur des données de santé, « même pour une partie seulement ».
+- La règle sera aussi à inscrire dans les conditions d'utilisation (hors test).
+
+### D22 – Journalisation de sécurité (Q27)
+- Journaliser les connexions (réussies et échouées) et les refus d'accès : qui, quoi, quand.
+- Ne jamais journaliser de mot de passe ni d'identifiant non reconnu.
+- Sources : ASVS 16.3.1 et 16.3.2, CNIL 2021-122, CNIL 2022-100 §64.
+- Le stockage séparé et non modifiable des logs relève de l'infrastructure, hors périmètre.
