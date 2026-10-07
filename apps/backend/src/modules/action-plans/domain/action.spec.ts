@@ -21,6 +21,8 @@ function actionIn(status: ActionStatus): Action {
     version: 3,
     createdAt,
     statusChanges: [],
+    deletedAt: null,
+    deletedBy: null,
   });
 }
 
@@ -92,5 +94,27 @@ describe('Action', () => {
     (action.statusChanges as unknown[]).length = 0;
 
     expect(action.statusChanges).toHaveLength(1);
+  });
+
+  it('refuse d’être créée sans titre (D11)', () => {
+    expect(() =>
+      Action.create({ id: 'a1', organizationId: 'org', planId: 'p1', title: ' ', description: null, createdAt }),
+    ).toThrow(ValidationError);
+  });
+
+  it('modifie son titre et sa description sans changer d’état (R3b.2)', () => {
+    const action = actionIn(IN_PROGRESS);
+
+    action.edit(' Former tout le personnel ', ' ');
+
+    expect(action.snapshot()).toMatchObject({ title: 'Former tout le personnel', description: null, status: IN_PROGRESS });
+  });
+
+  it('enregistre sa suppression logique : auteur et date (D7)', () => {
+    const action = actionIn(TODO);
+
+    action.delete('alice', at);
+
+    expect(action.snapshot()).toMatchObject({ deletedAt: at, deletedBy: 'alice' });
   });
 });
