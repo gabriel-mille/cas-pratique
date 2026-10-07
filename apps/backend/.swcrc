@@ -15,6 +15,7 @@
     "keepClassNames": true,
     "baseUrl": "."
   },
+  "exclude": [".*\\.spec\\.tsx?$", ".*\\.test\\.tsx?$", "[\\\\/]testing[\\\\/]"],
   "minify": false,
   "module": {
     "type": "commonjs"
