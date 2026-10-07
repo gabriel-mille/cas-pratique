@@ -67,6 +67,24 @@ npx nx build frontend
 npx nx run-many -t build
 ```
 
+## Tests et lint
+
+```sh
+npx nx run-many -t lint test
+```
+
+Les scénarios Gherkin de `docs/specs/features/` sont exécutés comme tests, côté backend et côté frontend (voir `docs/decisions.md`, D26).
+
+## Hooks Git
+
+Installés automatiquement par `npm install` (husky) :
+
+- `commit-msg` : le message doit suivre Conventional Commits (commitlint) ;
+- `pre-commit` : lint et tests des projets touchés (`nx affected`) ;
+- `pre-push` : lint, tests et build des projets touchés.
+
+Ils tiennent lieu de CI (D27) : ne pas les contourner avec `--no-verify`.
+
 ## Structure du projet
 
 ```

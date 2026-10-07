@@ -43,7 +43,6 @@ Toute décision sur un point ambigu de l'énoncé doit être tracée dans `docs/
 
 - Base : `docker compose up -d` (conteneur `cas-pratique-db`, base `cas_pratique`, user/mdp `postgres`). `.env` à la racine (cf. README).
 - Toujours passer par Nx : `npx nx serve backend` (http://localhost:3000/api), `npx nx serve frontend` (http://localhost:4200), `npx nx run-many -t build`, `npx nx run-many -t test`.
-- Le backend n'a pas encore de cible `test` : la configurer avant le premier test.
 - Dump : `docker compose exec postgres pg_dump -U postgres cas_pratique > dump.sql`.
 
 ## Git

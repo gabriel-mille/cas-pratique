@@ -67,7 +67,7 @@ Règle de travail n°2 (`AGENTS.md`) : avant de coder, chercher une solution exi
 | Tests E2E | Playwright 1.63 via `@nx/playwright` + `@axe-core/playwright` 4.13 | ✅ | nx.dev *Playwright* ; playwright.dev *Accessibility testing*. Cypress ❌ |
 | Lint des tests | `eslint-plugin-testing-library` 7.16 (`flat/react`) + `@vitest/eslint-plugin` 1.6 (`recommended`) | ✅ | READMEs officiels. `eslint-plugin-vitest` ❌ (abandonné) |
 | Tests d'accessibilité | `axe-core` 4.14 appelé dans un helper de test | ✅ | `vitest-axe` ❌ (sans version stable depuis 2022) ; `jest-axe` ne documente pas Vitest |
-| Lint | ESLint 9 flat config + `@nx/eslint-plugin` (`flat/react`) + `eslint-plugin-jsx-a11y` en `strict` | ✅ | `jsx-a11y` exige ESLint ≤ 9 |
+| Lint | ESLint 9 flat config + `@nx/eslint-plugin` (`flat/react`) + `eslint-plugin-jsx-a11y` en `strict` | ✅ | `jsx-a11y` exige ESLint ≤ 9 ; `nx add @nx/eslint` installait ESLint 8.57, version 9 installée explicitement |
 | Lint FSD | `steiger` 0.7 + `@feature-sliced/steiger-plugin`, en script `lint:fsd`, exposé comme cible Nx | ✅ | README Steiger (encore en bêta). Nx expose les `scripts` comme cibles |
 | Exemple de référence | `ruslan4432013/fsd-react-query-example` | – | Lié depuis la doc FSD, mais communautaire |
 

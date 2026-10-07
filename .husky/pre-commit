@@ -1,0 +1,7 @@
+# Husky remplace core.hooksPath pour ce dépôt : on relance d'abord le hook global
+# de la machine s'il existe (ex. détection de secrets), puis lint et tests (D27).
+global_hooks=$(git config --global core.hooksPath)
+if [ -n "$global_hooks" ] && [ -x "$global_hooks/pre-commit" ]; then
+  "$global_hooks/pre-commit" || exit 1
+fi
+npx nx affected -t lint test --base=main
