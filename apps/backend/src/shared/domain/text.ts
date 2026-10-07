@@ -5,6 +5,8 @@ export const TITLE_MAX_LENGTH = 200;
 export const DESCRIPTION_MAX_LENGTH = 5000;
 
 export const NAME_MAX_LENGTH = 200;
+/** Motif d'un refus de validation (D34). */
+export const REASON_MAX_LENGTH = 2000;
 
 /** Longueur en caractères (points de code), comme `varchar(n)` dans PostgreSQL. */
 export const length = (value: string) => [...value].length;
