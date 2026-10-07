@@ -318,7 +318,9 @@ Les numéros `Qn` renvoient à `docs/specs/open-questions.md`. Les URLs des sour
   - MSW **3** : l'option s'appelle `onUnhandledFrame: 'error'` (et non plus `onUnhandledRequest`) ; toute requête non prévue fait échouer le test ;
   - matchers `@testing-library/jest-dom` 6 (`toBeInvalid`, `toHaveAccessibleDescription`…) ; axe-core sur chaque page et dialogue, avec les tags WCAG 2.0 à 2.2 A/AA, contraste exclu sous jsdom ;
   - **e2e Playwright** (2 parcours, Chromium seul) contre le vrai backend et PostgreSQL, avec `@axe-core/playwright` (contraste compris). Ils sont dans `apps/frontend/e2e` (générateur `@nx/playwright:configuration` sur le projet existant) plutôt que dans un projet Nx séparé : moins de configuration, une seule cible `frontend:e2e`. Ils ne sont **pas** dans les hooks : ils démarrent les deux serveurs et écrivent dans la base de développement. Lancement manuel.
-- **Écarts connus** : bundle unique de 550 ko (non compressé), sans découpage par route ; noté, sans effet pour un test technique.
+- **Écarts connus** :
+  - bundle unique de 550 ko (non compressé), sans découpage par route ; noté, sans effet pour un test technique ;
+  - **UI/UX** : l'interface est fonctionnelle, accessible (WCAG 2.2 AA vérifié par axe) et couvre tous les besoins, mais son ergonomie n'a pas été optimisée pour l'expérience utilisateur (parcours, densité d'information, design visuel). L'énoncé ne le demande pas et privilégie la réflexion sur l'implémentation. Statut : **prévu**. Ce travail devrait s'appuyer sur des retours d'utilisateurs réels (soignants, qualiticiens) plutôt que sur des suppositions.
 
 ### D36 – Données de démonstration et dump
 - **Créées par l'API**, par `tools/seed-demo.mjs`, et non par des `INSERT` écrits à la main. Ainsi, les mots de passe hachés (scrypt), les versions, l'historique d'états et la suppression logique sont exactement ceux que produit l'application ; un `INSERT` manuel pourrait contourner un invariant du domaine sans que rien ne le signale. Choix du projet.
