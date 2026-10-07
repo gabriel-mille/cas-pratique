@@ -54,3 +54,12 @@ Seules sources utilisées pour les règles d'architecture et de convention du pr
 ## Non trouvé dans les sources officielles
 - Guide FSD officiel pour React + Vite, React Router ou Nx.
 - Recommandation NestJS officielle de séparer entités ORM et entités de domaine (déduite de l'isolation du domaine chez Evans / MS Learn).
+
+## Spécification fonctionnelle
+- User story (Connextra) – Mike Cohn : https://www.mountaingoatsoftware.com/blog/why-the-three-part-user-story-template-works-so-well
+- INVEST – Bill Wake : https://xp123.com/articles/invest-in-good-stories-and-smart-tasks/
+- Gherkin reference : https://cucumber.io/docs/gherkin/reference/
+- Example Mapping – Matt Wynne : https://cucumber.io/blog/bdd/example-mapping-introduction/
+- Introducing BDD – Dan North : https://dannorth.net/blog/introducing-bdd/
+- ISTQB CTFL v4.0.1 (§4.2.3 tables de décision, §4.2.4 transitions d'états) : https://istqb.org/wp-content/uploads/2024/11/ISTQB_CTFL_Syllabus_v4.0.1.pdf
+- NIST RBAC : https://csrc.nist.gov/projects/role-based-access-control
