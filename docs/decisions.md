@@ -134,7 +134,7 @@ Les numéros `Qn` renvoient à `docs/specs/open-questions.md`. Les URLs des sour
 ### D16 – Révocation des sessions JWT (Q21)
 - Jeton à courte durée de vie.
 - À chaque requête, le serveur relit en base l'appartenance (active ou non, rôle) et une date `sessionsValidAfter`. Les jetons émis avant cette date sont refusés.
-- La déconnexion, le retrait d'un membre et le changement de rôle mettent cette date à jour.
+- La déconnexion et le changement de mot de passe mettent cette date à jour. Le retrait et le changement de rôle agissent par la relecture de l'appartenance (affiné en D32).
 - Sources :
   - ASVS 7.4.1 (L1), qui cite « disallowing tokens produced before a per-user date and time » ;
   - ASVS 7.4.2 (L1) ;
@@ -240,3 +240,23 @@ Les numéros `Qn` renvoient à `docs/specs/open-questions.md`. Les URLs des sour
   - Choix du projet. Les sources DDD admettent les deux emplacements.
 - **Suppression** : une action supprimée est exclue de toutes les lectures dans le repository (`findById`, `findByPlan`), un seul endroit par implémentation (piège noté en D7). Un contrat de test commun vérifie ce filtrage sur toutes les implémentations.
 - **Modifier une action Terminée** reste permis : la spec interdit seulement d'en changer l'état (D4), et rien n'interdit d'en corriger le titre. À confirmer si besoin.
+
+### D32 – Identité : email, mot de passe, sessions, transactions
+- **Email** (OWASP *Email Validation and Verification Cheat Sheet*) :
+  - on garde l'adresse saisie et une clé canonique : NFC, domaine en punycode (`domainToASCII`), adresse entière en minuscules ;
+  - la clé sert à l'unicité (D8) et à la connexion. Rendre la partie locale insensible à la casse est un choix du projet, que la cheat sheet autorise à condition d'être documenté ;
+  - seul le format clairement invalide est rejeté (pas de `@`, partie vide, espace, plus de 254 caractères, RFC 5321) ;
+  - pas de vérification de possession en v1 (pas d'envoi d'email, D8) : noté 🟨 dans `compliance.md`.
+- **Mot de passe** (NIST 800-63B rev4, ASVS 5.0 §6.2) :
+  - normalisation **NFC** avant contrôle et hachage (NIST rev4 ; NFKC n'est plus recommandé) ; longueur comptée en points de code ;
+  - maximum **128** caractères : choix du projet (NIST et ASVS demandent d'en accepter au moins 64) ; limite le coût du hachage ;
+  - **liste interdite** : SecLists `xato-net-10-million-passwords-1000000`, filtrée sur 15 à 128 caractères (10 898 entrées). La liste des 10 000 plus courants n'en contenait qu'**une** de 15 caractères ou plus : inutile avec notre minimum. ASVS 6.2.4 demande justement les mots de passe courants « which match the application's password policy ». Comparaison sans tenir compte de la casse ;
+  - **mots du contexte** (ASVS 6.2.11, NIST) : nom du service, email, partie locale, nom de la personne et de l'organisation. Comparés au mot de passe **entier**, comme le demande NIST (pas de recherche de sous-chaîne) ;
+  - changer son mot de passe exige le mot de passe actuel (ASVS 6.2.3) ;
+  - mot de passe temporaire d'un membre ajouté : 18 octets aléatoires (144 bits), affiché une seule fois, stocké haché.
+- **scrypt** : N=2^17, r=8, p=1. Il faut `maxmem` ≥ 128·N·r = 128 Mio : la limite par défaut de Node (32 Mio) refuse ces paramètres (doc Node vérifiée). Un calcul prend environ 350 ms et 128 Mio : sous charge, le throttler (D17) limite le risque. Les scénarios utilisent un hacheur rapide (sha256), scrypt a ses propres tests.
+- **Sessions, affinement de D16** : `sessionsValidAfter` est porté par `User` et mis à jour par la déconnexion et le changement de mot de passe. Le retrait et le changement de rôle n'en ont pas besoin : l'appartenance est relue à chaque requête (`ResolveSession`), l'effet est donc immédiat.
+  - Piège pour la tranche HTTP : le `iat` d'un JWT est en secondes, `sessionsValidAfter` en millisecondes.
+- **Connexion** : un email inconnu ou mal formé déclenche quand même une vérification contre un hachage factice, pour que le temps de réponse ne révèle pas l'existence du compte (OWASP *Authentication Cheat Sheet*). Un membre retiré reçoit le même message générique.
+- **Transactions multi-agrégats** : l'inscription (organisation, compte, appartenance) et l'ajout d'un membre (compte, appartenance) créent plusieurs agrégats d'un coup. Écart assumé à « une transaction = un agrégat » (Evans) : il s'agit de créations, sans contention. Port `TransactionRunner` dans `shared/application` ; l'implémentation PostgreSQL vient en tranche 4.
+- **« Changer son mot de passe avant toute autre opération »** (D8) : appliqué par le guard HTTP en tranche 5, `ResolveSession` renvoie déjà `mustChangePassword`.

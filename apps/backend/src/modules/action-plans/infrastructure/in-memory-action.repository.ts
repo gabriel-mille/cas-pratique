@@ -1,4 +1,4 @@
-import { InMemoryVersionedStore } from '../../../shared/infrastructure/in-memory-versioned-store';
+import { InMemoryTenantStore } from '../../../shared/infrastructure/in-memory-versioned-store';
 import { Action, ActionProps } from '../domain/action';
 import { ActionRepository } from '../domain/action.repository';
 
@@ -8,7 +8,7 @@ import { ActionRepository } from '../domain/action.repository';
  * Les actions supprimées restent stockées mais sont exclues de toutes les lectures (D7).
  */
 export class InMemoryActionRepository implements ActionRepository {
-  private readonly store = new InMemoryVersionedStore<ActionProps>();
+  private readonly store = new InMemoryTenantStore<ActionProps>();
 
   async findById(organizationId: string, id: string): Promise<Action | null> {
     const row = this.store.get(organizationId, id);

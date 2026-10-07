@@ -25,14 +25,14 @@ Règle de travail n°2 (`AGENTS.md`) : avant de coder, chercher une solution exi
 | Authentification | `@nestjs/jwt` 12.0.2 + `cookie-parser` 1.4.7 + guard maison qui lit le cookie | ✅ | Doc NestJS v11 *Authentication* (`@nestjs/jwt` + guard) et *Cookies* |
 | | `@nestjs/passport` + `passport-jwt` | ❌ | Couche en plus ; `passport-jwt` n'a pas été publié depuis 2022-12 |
 | | `@nestjs/authentication` (sessions, doc v12) | ❌ | Version 0.0.1, exige Nest 12 |
-| Hachage | `node:crypto` scrypt, N=2^17, r=8, p=1, `timingSafeEqual` | ✅ | OWASP Password Storage (paramètres) ; doc NestJS v12. `maxmem` à régler (doc Node à vérifier) |
+| Hachage | `node:crypto` scrypt, N=2^17, r=8, p=1, `timingSafeEqual` | ✅ | OWASP Password Storage (paramètres) ; doc NestJS v12. `maxmem` = 2·128·N·r : la limite par défaut de Node (32 Mio) refuse N=2^17 (doc Node vérifiée, D32) |
 | Limitation de débit | `@nestjs/throttler` 6.7.1, `getTracker` surchargé (IP + email) | ✅ | Doc NestJS *Rate limiting* |
 | En-têtes | `helmet` 8.3.0, appliqué en premier | ✅ | Doc NestJS *Helmet* |
 | CORS | `app.enableCors({ origin: <front>, credentials: true })` | ✅ | Doc NestJS *CORS* |
 | CSRF | Cookie `SameSite=Strict` + vérification de l'en-tête `Origin` sur les écritures + JSON uniquement | ✅ S2 | OWASP *CSRF Prevention*. `csrf-csrf` 4.0.3 (proposé par la doc v11) ❌ : une dépendance de plus sans gain ici |
 | Validation des entrées | `class-validator` 0.15 + `class-transformer` + `ValidationPipe` (`whitelist`, `forbidNonWhitelisted`) | ✅ | Doc NestJS v11 *Validation* ; requis par `@nestjs/swagger` |
 | | `nestjs-zod` | ❌ | Non officiel |
-| Mots de passe interdits | Fichier SecLists (MIT), par exemple les 10 000 plus courants, chargé dans un `Set` | ✅ | ASVS 6.2.4 (au moins le top 3000). Licence de la liste NCSC d'origine non trouvée |
+| Mots de passe interdits | Fichier SecLists (MIT) `xato-net-10-million-passwords-1000000` filtré sur 15 à 128 caractères (10 898 entrées), chargé dans un `Set` | ✅ | ASVS 6.2.4 (au moins le top 3000 « which match the application's password policy »). La liste des 10 000 plus courants ne contient qu'une entrée de 15 caractères ou plus : écartée (D32). Provenance et licence dans `common-passwords.NOTICE.md` |
 | Cycle de vie d'une action | Table de transitions dans l'entité de domaine | 🛠 [D] S3 | 4 états ; le domaine reste sans dépendance (règle backend). xstate ❌ : fiable, mais rien ne l'impose |
 | Événements de domaine | Interface maison dans le domaine ; `@nestjs/cqrs` **11.0.3** seulement si des handlers sont nécessaires | ✅ | La doc v11 *CQRS* permet de garder le domaine « completely framework-agnostic » |
 | Suppression logique | `@DeleteDateColumn` (exclusion par défaut, `withDeleted`) | ✅ | typeorm.io *Entities*, *Find options* |

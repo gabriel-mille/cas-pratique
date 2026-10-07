@@ -20,3 +20,9 @@ export class NotFoundError extends DomainError {}
 
 /** La modification part d'une version périmée (D14). */
 export class StaleVersionError extends DomainError {}
+
+/** L'opération contredit une donnée existante (email déjà utilisé). */
+export class ConflictError extends DomainError {}
+
+/** Identifiants refusés ou session invalide. Le message reste générique (D13). */
+export class AuthenticationError extends DomainError {}
