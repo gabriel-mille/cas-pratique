@@ -1,5 +1,12 @@
 import { ValidationError } from './errors';
-import { DESCRIPTION_MAX_LENGTH, optionalDescription, requireTitle, TITLE_MAX_LENGTH } from './text';
+import {
+  DESCRIPTION_MAX_LENGTH,
+  NAME_MAX_LENGTH,
+  optionalDescription,
+  requireName,
+  requireTitle,
+  TITLE_MAX_LENGTH,
+} from './text';
 
 describe('requireTitle (D11)', () => {
   it('retire les espaces en bord', () => {
@@ -30,5 +37,19 @@ describe('optionalDescription (D11)', () => {
 
   it('refuse une description trop longue', () => {
     expect(() => optionalDescription('a'.repeat(DESCRIPTION_MAX_LENGTH + 1))).toThrow(ValidationError);
+  });
+});
+
+describe('requireName', () => {
+  it('retire les espaces en bord', () => {
+    expect(requireName(' Clinique des Lilas ', 'Le nom')).toBe('Clinique des Lilas');
+  });
+
+  it('nomme le champ refusé', () => {
+    expect(() => requireName(' ', 'Le nom de l’organisation')).toThrow('Le nom de l’organisation est obligatoire');
+  });
+
+  it('refuse un nom trop long', () => {
+    expect(() => requireName('a'.repeat(NAME_MAX_LENGTH + 1), 'Le nom')).toThrow(ValidationError);
   });
 });
