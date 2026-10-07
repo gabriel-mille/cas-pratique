@@ -1,10 +1,10 @@
-import { InMemoryVersionedStore } from '../../../shared/infrastructure/in-memory-versioned-store';
+import { InMemoryTenantStore } from '../../../shared/infrastructure/in-memory-versioned-store';
 import { ActionPlan, ActionPlanProps } from '../domain/action-plan';
 import { ActionPlanRepository } from '../domain/action-plan.repository';
 
 /** Implémentation en mémoire, utilisée par les scénarios au niveau application (D29). */
 export class InMemoryActionPlanRepository implements ActionPlanRepository {
-  private readonly store = new InMemoryVersionedStore<ActionPlanProps>();
+  private readonly store = new InMemoryTenantStore<ActionPlanProps>();
 
   async findById(organizationId: string, id: string): Promise<ActionPlan | null> {
     const row = this.store.get(organizationId, id);
