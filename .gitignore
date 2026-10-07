@@ -49,3 +49,6 @@ vitest.config.*.timestamp*
 # environment files
 .env
 .env.*
+
+# Énoncé du test (non versionné)
+Cas pratique Qualineo.pdf
