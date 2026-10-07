@@ -208,3 +208,23 @@ Les numéros `Qn` renvoient à `docs/specs/open-questions.md`. Les URLs des sour
 - Les hooks ne sont jamais contournés (`--no-verify` interdit).
 - Seuils de couverture Vitest à 80 %. La doc Vitest ne recommande aucune valeur ; Dodds et Fowler rappellent que la couverture est un outil, pas un objectif.
 - Alternative écartée : une CI GitHub Actions, jugée inutile pour un test technique.
+
+## Architecture du backend
+
+### D28 – `Action` est un agrégat distinct de `ActionPlan`
+- L'action référence son plan par id. Son historique (`ActionStatusChange`) fait partie de l'agrégat `Action`, en ajout seul, et il est sauvé dans la même transaction.
+- Raison : la version est portée par l'action (D14). Deux changements sur deux actions du même plan ne doivent pas entrer en conflit.
+- Sources : Vernon, *Effective Aggregate Design* (petits agrégats, référence par identité) ; Evans, *DDD Reference* (une transaction = un agrégat).
+- Alternative écartée : `ActionPlan` racine contenant ses actions. Toute modification d'une action verrouillerait le plan entier.
+
+### D29 – Niveau d'exécution des scénarios côté backend
+- Les `.feature` sont joués au niveau **application** : vrais cas d'usage, repositories en mémoire. Aucun scénario n'est exclu côté back.
+- En dessous : tests unitaires du domaine, un par règle.
+- Au-dessus : quelques e2e (Supertest + Testcontainers) pour ce qui n'existe qu'en HTTP ou en base : cookie et guard, changement de mot de passe forcé, filtrage multi-tenant en SQL, 412/428, update conditionnel réel, format RFC 9457.
+- Source : Dodds, *Testing Trophy* (l'essentiel au niveau intégration, peu d'e2e). Le placement exact est un choix du projet.
+
+### D30 – Deux bounded contexts : `identity` et `action-plans`
+- `identity` : organisations, comptes, appartenances, authentification. `action-plans` : plans, actions, historique.
+- `action-plans` ne dépend pas d'`identity`. Il reçoit un `Actor { userId, organizationId, role }` construit par le guard HTTP. `Role` est partagé (`shared/domain`).
+- Source : Evans et Fowler (*BoundedContext*). Le découpage en deux contextes est un choix du projet.
+- Pratiques du projet, non imposées par une source : ids `crypto.randomUUID()`, port `Clock` pour des dates testables, erreurs métier typées traduites en HTTP par un seul filtre (D24).

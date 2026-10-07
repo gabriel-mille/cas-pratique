@@ -10,6 +10,8 @@ export default defineConfig(() => ({
   plugins: [
     swc.vite({
       tsconfigFile: join(__dirname, 'tsconfig.spec.json'),
+      // Le .swcrc sert au build et exclut les tests : les options viennent ici du tsconfig.spec.
+      swcrc: false,
       module: { type: 'es6' },
     }),
   ],
