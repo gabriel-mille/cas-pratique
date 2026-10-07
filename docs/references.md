@@ -167,3 +167,17 @@ Seules sources utilisées pour les règles d'architecture et de convention du pr
 ### Outillage
 - Nx : générateur Vitest https://nx.dev/docs/technologies/test-tools/vitest · module boundaries https://nx.dev/docs/features/enforce-module-boundaries
 - commitlint (local setup) : https://commitlint.js.org/guides/local-setup.html · husky : https://typicode.github.io/husky/
+### Tests front et choix complémentaires
+- Kent C. Dodds : https://kentcdodds.com/blog/the-testing-trophy-and-testing-classifications · https://kentcdodds.com/blog/write-tests · https://kentcdodds.com/blog/common-mistakes-with-react-testing-library · https://kentcdodds.com/blog/testing-implementation-details · https://kentcdodds.com/blog/how-to-know-what-to-test · https://kentcdodds.com/blog/when-i-follow-tdd
+- Testing Library – guiding principles : https://testing-library.com/docs/guiding-principles
+- Martin Fowler – TestCoverage : https://martinfowler.com/bliki/TestCoverage.html
+- Vitest : browser mode https://vitest.dev/guide/browser/ · coverage https://vitest.dev/config/coverage
+- TanStack Query – Testing : https://tanstack.com/query/latest/docs/framework/react/guides/testing
+- React Router – Testing : https://reactrouter.com/start/data/testing
+- MSW – best practices : https://mswjs.io/docs/best-practices/structuring-handlers · https://mswjs.io/docs/best-practices/avoid-request-assertions
+- vitest-cucumber : https://github.com/amiceli/vitest-cucumber · langues : https://amiceli.github.io/vitest-cucumber-docs/features/spoken-languages
+- Nx Playwright : https://nx.dev/docs/technologies/test-tools/playwright/introduction · Nx affected : https://nx.dev/docs/features/ci-features/affected
+- Playwright – accessibilité : https://playwright.dev/docs/accessibility-testing
+- eslint-plugin-testing-library : https://github.com/testing-library/eslint-plugin-testing-library · @vitest/eslint-plugin : https://github.com/vitest-dev/eslint-plugin-vitest
+- Vite – CSS Modules : https://vite.dev/guide/features.html · FSD layers : https://feature-sliced.design/docs/reference/layers · React Aria styling : https://react-aria.adobe.com/styling
+- Radix Toast : https://www.radix-ui.com/primitives/docs/components/toast · WCAG 4.1.3 : https://www.w3.org/WAI/WCAG22/Understanding/status-messages.html

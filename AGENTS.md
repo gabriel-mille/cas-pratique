@@ -18,6 +18,7 @@ Toute décision sur un point ambigu de l'énoncé doit être tracée dans `docs/
 - Avant chaque tâche, chercher si une solution existante et fiable couvre déjà le besoin : module officiel du framework, bibliothèque maintenue et reconnue, générateur Nx, pattern documenté.
 - Critères de fiabilité : source officielle ou très adoptée, maintenance active, licence compatible, version stable (pas de 0.0.x).
 - Si rien ne convient, l'écrire et justifier le développement maison dans `docs/decisions.md`.
+- Inventaire des briques retenues ou écartées : `docs/stack.md`.
 
 ## Règle de travail n°3 : identifier et suivre les normes
 
@@ -56,6 +57,7 @@ Sources : conventionalcommits.org v1.0.0, @commitlint/config-conventional, Git B
   - Body (optionnel, après une ligne vide) : explique le *pourquoi*.
 - Un commit = un changement isolé et complet. Ne pas mélanger plusieurs sujets ; découper avec `git add -p` si besoin.
 - En TDD : committer quand les tests sont verts et le code propre (après le refactor). Ne jamais committer une suite rouge.
+- Les hooks husky (commitlint, `nx affected -t lint test`, puis `build` au push) le vérifient automatiquement : ne jamais les contourner (`--no-verify` interdit). Pas de CI (D27).
 - Workflow GitHub flow : une branche descriptive par sujet depuis `main` (`feat/action-status-transitions`), push régulier sur `origin` (fork), PR vers `main`, suppression de la branche après merge.
 - Ne jamais pousser vers `upstream` (dépôt d'origine info-logi-sante).
 - Ne pas versionner : `.env`, `Cas pratique Qualineo.pdf`.

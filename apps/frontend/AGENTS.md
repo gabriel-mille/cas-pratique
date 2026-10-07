@@ -59,3 +59,36 @@ Non couvert par la doc officielle : React + Vite (le tutoriel utilise Remix), Re
 
 - Linter FSD officiel (en beta) : `steiger` + `@feature-sliced/steiger-plugin`, config `steiger.config.ts` avec `fsd.configs.recommended`. Pas encore installé.
 - Le front n'applique pas les droits : il masque les actions non autorisées par confort, mais le backend reste la seule autorité.
+
+## Style et composants
+
+- CSS Modules (`*.module.css`) + variables CSS. Tokens et reset dans `app/styles`, composants stylés dans `shared/ui`.
+- Composants interactifs complexes : React Aria Components, encapsulés dans `shared/ui`. Toasts : `@radix-ui/react-toast`.
+- Une erreur critique ne repose jamais uniquement sur un toast : elle s'affiche aussi dans la page (WCAG 4.1.3).
+- Détail des choix et versions : `docs/stack.md`.
+
+## Tests (D26)
+
+Sources : Kent C. Dodds (*Testing Trophy*, *Testing implementation details*, *Common mistakes with RTL*, *When I follow TDD*), testing-library.com, doc MSW, TanStack Query *Testing*, React Router *Testing*, playwright.dev. URLs : `docs/references.md`.
+
+- **Chaque scénario de `docs/specs/features/*.feature` est implémenté côté front** avec `@amiceli/vitest-cucumber` (`loadFeature(path, { language: 'fr' })`).
+  - Exception : un scénario qui ne se prouve qu'avec le vrai serveur est tagué `@back-only`, avec la raison.
+- Niveaux :
+  - **logique pure** (`model`, `lib`) : tests unitaires écrits d'abord (TDD) ;
+  - **intégration** (le cœur) : page ou feature rendue avec un vrai routeur en mémoire, un `QueryClient` neuf par test (`retry: false`), MSW pour le réseau (`onUnhandledRequest: 'error'`) ;
+  - **accessibilité** : `axe-core` (tags `wcag2a`, `wcag2aa`, `wcag21a`, `wcag21aa`, `wcag22aa`) sur chaque page et chaque modale ;
+  - **E2E** : 2 ou 3 parcours critiques avec Playwright + `@axe-core/playwright`, contre le vrai back.
+- Écriture :
+  - requêtes par rôle en priorité (`getByRole`, puis `getByLabelText`…), via `screen` ; `user-event` plutôt que `fireEvent` ;
+  - `find*` plutôt que `waitFor` ; pas d'`act` inutile ;
+  - asserter ce que l'utilisateur voit, pas les requêtes envoyées ni l'état interne.
+- À ne pas faire : tester des détails d'implémentation (state, hooks, props, classes CSS), de gros snapshots, du code trivial pour gonfler la couverture, ou les bibliothèques elles-mêmes.
+- La matrice des droits (`docs/specs/permissions.md`) est testée par rôle (`it.each`) : boutons visibles ou absents.
+- Fichiers : `*.spec.ts(x)` à côté du code ; E2E dans un projet Nx séparé.
+
+## Definition of Done (front)
+
+- Les scénarios concernés passent (aucun scénario sans implémentation), et la sortie des tests est montrée.
+- Couverture ≥ 80 % (seuils Vitest), aucune violation axe.
+- Lint vert : ESLint (dont `testing-library` et `@vitest/eslint-plugin`) et Steiger.
+- Les hooks Git le vérifient automatiquement ; ne jamais les contourner.

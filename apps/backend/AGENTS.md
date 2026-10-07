@@ -67,7 +67,11 @@ apps/backend/src/
   2. cas d'usage avec repository en mémoire ou mocké ;
   3. quelques e2e (`createNestApplication` + Supertest) contre PostgreSQL.
 - Fichiers : `*.spec.ts` à côté du code, e2e en `*.e2e-spec.ts`.
+- **Chaque scénario de `docs/specs/features/*.feature` est un test exécuté** avec `@amiceli/vitest-cucumber` (D26) : la liste de comportements du Canon TDD, c'est la spec.
+  - Domaine : un test unitaire par règle (sans Nest ni base).
+  - Intégration : `@testcontainers/postgresql` ; e2e HTTP : `supertest`.
+- Vitest + NestJS : `unplugin-swc` obligatoire (esbuild ne gère pas `emitDecoratorMetadata`).
 
 ## Base de données
 
-- `synchronize: true` est actif dans `app.module.ts`. La doc Nest l'interdit en production (il faut des migrations). C'est acceptable ici, mais à mentionner dans le README.
+- `synchronize: true` est actif dans `app.module.ts` ; la doc TypeORM le juge « unsafe » en production. On passe aux migrations TypeORM, lancées par une cible Nx (`docs/stack.md`).
