@@ -77,7 +77,9 @@ Les numéros `Qn` renvoient à `docs/specs/open-questions.md`. Les URLs des sour
 
 ### D11 – Champs obligatoires (Q18)
 - Titre obligatoire et non vide, description facultative, pour les plans comme pour les actions.
-- Les longueurs maximales seront fixées à l'implémentation et documentées.
+- Longueurs maximales : **200 caractères pour un titre, 5000 pour une description**. Choix du projet, sans source normative : un titre se lit sur une ligne de liste, une description reste un texte court (pas un document). À revoir avec les utilisateurs.
+- Les espaces en bord sont retirés ; une description vide devient « absente » (`null`).
+- Les longueurs sont comptées en caractères (points de code), comme `varchar(n)` dans PostgreSQL, et non en unités UTF-16 comme `String.length`.
 
 ### D12 – Vocabulaire (Q17)
 - Code :
@@ -203,9 +205,10 @@ Les numéros `Qn` renvoient à `docs/specs/open-questions.md`. Les URLs des sour
 ### D27 – Vérification automatique en local, sans CI (S7, S8)
 - Choix : hooks Git avec husky 9.
   - `commit-msg` : commitlint (Conventional Commits).
-  - `pre-commit` : le hook global de l'utilisateur s'il existe (gitleaks, lychee), puis `nx affected -t lint test`.
-  - `pre-push` : `nx affected -t lint test build`.
+  - `pre-commit` : le hook global de l'utilisateur s'il existe (gitleaks, lychee), puis `nx affected -t lint typecheck test`.
+  - `pre-push` : `nx affected -t lint typecheck test build`.
 - Les hooks ne sont jamais contournés (`--no-verify` interdit).
+- `typecheck` (cible `tsc --build` inférée par `@nx/js/typescript`) est nécessaire : Vitest transpile avec SWC sans vérifier les types, donc une erreur de type dans un test passait inaperçue. Le `tsconfig.spec.json` du backend a été aligné sur celui généré pour le frontend (`module: esnext`, `moduleResolution: bundler`, référence vers `tsconfig.app.json`).
 - Seuils de couverture Vitest à 80 %. La doc Vitest ne recommande aucune valeur ; Dodds et Fowler rappellent que la couverture est un outil, pas un objectif.
 - Alternative écartée : une CI GitHub Actions, jugée inutile pour un test technique.
 
@@ -228,3 +231,12 @@ Les numéros `Qn` renvoient à `docs/specs/open-questions.md`. Les URLs des sour
 - `action-plans` ne dépend pas d'`identity`. Il reçoit un `Actor { userId, organizationId, role }` construit par le guard HTTP. `Role` est partagé (`shared/domain`).
 - Source : Evans et Fowler (*BoundedContext*). Le découpage en deux contextes est un choix du projet.
 - Pratiques du projet, non imposées par une source : ids `crypto.randomUUID()`, port `Clock` pour des dates testables, erreurs métier typées traduites en HTTP par un seul filtre (D24).
+
+### D31 – Plans d'actions : version, contrôle des rôles, lectures
+- **Le plan porte aussi une `version`** : R3b.3 rejette une modification sur version périmée, pour un plan comme pour une action. Même mécanisme que D14.
+- **Où vérifier les rôles** :
+  - les règles qui dépendent de l'état (qui fait quelle transition, D2) restent dans le domaine, dans la table de transitions ;
+  - les opérations réservées à l'Administrateur sans condition d'état (créer, modifier, supprimer) sont vérifiées dans le cas d'usage, **avant tout chargement** : un refus ne dit donc rien de l'existence de la ressource.
+  - Choix du projet. Les sources DDD admettent les deux emplacements.
+- **Suppression** : une action supprimée est exclue de toutes les lectures dans le repository (`findById`, `findByPlan`), un seul endroit par implémentation (piège noté en D7). Un contrat de test commun vérifie ce filtrage sur toutes les implémentations.
+- **Modifier une action Terminée** reste permis : la spec interdit seulement d'en changer l'état (D4), et rien n'interdit d'en corriger le titre. À confirmer si besoin.

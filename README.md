@@ -70,7 +70,7 @@ npx nx run-many -t build
 ## Tests et lint
 
 ```sh
-npx nx run-many -t lint test
+npx nx run-many -t lint typecheck test
 ```
 
 Les scénarios Gherkin de `docs/specs/features/` sont exécutés comme tests, côté backend et côté frontend (voir `docs/decisions.md`, D26).

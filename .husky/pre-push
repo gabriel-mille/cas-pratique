@@ -1,2 +1,2 @@
 # Vérification complète avant de publier (D27).
-npx nx affected -t lint test build --base=origin/main
+npx nx affected -t lint typecheck test build --base=origin/main

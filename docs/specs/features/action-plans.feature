@@ -30,6 +30,11 @@ Fonctionnalité: Plans d'actions et actions
       Quand Alice renomme l'action en "Former tout le personnel au lavage des mains"
       Alors l'action est "En cours"
 
+    Exemple: Alice modifie un plan
+      Soit le plan "Audit hygiène 2026"
+      Quand Alice renomme le plan en "Audit hygiène 2026 - suivi"
+      Alors le plan "Audit hygiène 2026 - suivi" existe
+
   Règle: Le titre est obligatoire, la description facultative
 
     Exemple: Plan sans titre

@@ -1,5 +1,6 @@
 import { ForbiddenError, InvalidTransitionError, ValidationError } from '../../../shared/domain/errors';
 import { Role } from '../../../shared/domain/role';
+import { optionalDescription, requireTitle } from '../../../shared/domain/text';
 import { ActionStatus, findTransition } from './action-status';
 
 export interface StatusChanger {
@@ -26,16 +27,28 @@ export interface ActionProps {
   version: number;
   createdAt: Date;
   statusChanges: ActionStatusChange[];
+  /** Suppression logique (D7) : l'action reste en base, le repository l'exclut des lectures. */
+  deletedAt: Date | null;
+  deletedBy: string | null;
 }
 
-export type NewActionProps = Omit<ActionProps, 'status' | 'version' | 'statusChanges'>;
+export type NewActionProps = Omit<ActionProps, 'status' | 'version' | 'statusChanges' | 'deletedAt' | 'deletedBy'>;
 
 /** Agrégat (D28) : l'action et son historique de changements d'état. */
 export class Action {
   private constructor(private readonly props: ActionProps) {}
 
   static create(props: NewActionProps): Action {
-    return new Action({ ...props, status: ActionStatus.TODO, version: 1, statusChanges: [] });
+    return new Action({
+      ...props,
+      title: requireTitle(props.title),
+      description: optionalDescription(props.description),
+      status: ActionStatus.TODO,
+      version: 1,
+      statusChanges: [],
+      deletedAt: null,
+      deletedBy: null,
+    });
   }
 
   static restore(props: ActionProps): Action {
@@ -61,6 +74,18 @@ export class Action {
   /** Copie de l'état complet, pour la persistance. */
   snapshot(): ActionProps {
     return { ...this.props, statusChanges: this.props.statusChanges.map((change) => ({ ...change })) };
+  }
+
+  /** Modifie le contenu, jamais l'état (R3b.2). */
+  edit(title: string, description: string | null): void {
+    const validTitle = requireTitle(title);
+    this.props.description = optionalDescription(description);
+    this.props.title = validTitle;
+  }
+
+  delete(by: string, at: Date): void {
+    this.props.deletedAt = at;
+    this.props.deletedBy = by;
   }
 
   changeStatus(to: ActionStatus, by: StatusChanger, at: Date): void {
