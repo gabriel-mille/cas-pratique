@@ -14,8 +14,9 @@ export function describeActionRepositoryContract(name: string, createRepository:
     const manager = { userId: 'bob', role: Role.MANAGER };
     let repository: ActionRepository;
 
-    const newAction = () =>
-      Action.create({ id: 'a1', organizationId: 'org-a', planId: 'p1', title: 'T', description: null, createdAt: at });
+    const newAction = (id = 'a1', organizationId = 'org-a', planId = 'p1', createdAt = at) =>
+      Action.create({ id, organizationId, planId, title: `Action ${id}`, description: null, createdAt });
+    const ids = (actions: Action[]) => actions.map((action) => action.id);
 
     beforeEach(async () => {
       repository = await createRepository();
@@ -49,6 +50,24 @@ export function describeActionRepositoryContract(name: string, createRepository:
 
       await expect(repository.save(second)).rejects.toThrow(StaleVersionError);
       expect((await repository.findById('org-a', 'a1'))?.statusChanges).toHaveLength(1);
+    });
+
+    it('liste les actions d’un plan de l’organisation, par date de création', async () => {
+      await repository.save(newAction('a3', 'org-a', 'p1', new Date('2026-10-09T10:00:00Z')));
+      await repository.save(newAction('a2', 'org-a', 'p1', new Date('2026-10-08T10:00:00Z')));
+      await repository.save(newAction('other-plan', 'org-a', 'p2'));
+      await repository.save(newAction('other-org', 'org-b', 'p1'));
+
+      expect(ids(await repository.findByPlan('org-a', 'p1'))).toEqual(['a1', 'a2', 'a3']);
+    });
+
+    it('n’expose plus une action supprimée, ni en détail ni dans son plan (D7)', async () => {
+      const action = (await repository.findById('org-a', 'a1')) as Action;
+      action.delete('alice', at);
+      await repository.save(action);
+
+      expect(await repository.findById('org-a', 'a1')).toBeNull();
+      expect(await repository.findByPlan('org-a', 'p1')).toEqual([]);
     });
   });
 }
