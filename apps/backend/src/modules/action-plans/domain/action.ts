@@ -58,6 +58,11 @@ export class Action {
     return [...this.props.statusChanges];
   }
 
+  /** Copie de l'état complet, pour la persistance. */
+  snapshot(): ActionProps {
+    return { ...this.props, statusChanges: this.props.statusChanges.map((change) => ({ ...change })) };
+  }
+
   changeStatus(to: ActionStatus, by: StatusChanger, at: Date): void {
     this.transition(to, by, at, null);
   }
