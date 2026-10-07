@@ -195,21 +195,22 @@ Aucune source ne fixe de liste d'états : la HAS demande seulement un « état d
 - Cette cible couvre le RGAA 4.1.2 (basé sur WCAG 2.1).
 - Elle anticipe l'EN 301 549 V4.1.1, dont l'application est attendue fin 2026.
 
-| Critère | Statut | Mise en œuvre |
-|---|---|---|
-| 1.3.1, 3.3.2 Libellés de formulaire, structure des tableaux | ✅ | `<label>`, `<table>` sémantique |
-| 3.3.1, 3.3.3 Erreurs identifiées en texte, suggestion | ✅ | Messages par champ |
-| 2.1.1, 2.4.3, 2.4.7, 2.4.11 Clavier, ordre du focus, focus visible | ✅ | Éléments natifs (`button`, `a`) |
-| 4.1.2 Nom, rôle, valeur | ✅ | Éléments natifs ; tests via `getByRole` |
-| 4.1.3 Messages de statut | ✅ | `role="status"` lors d'un changement d'état |
-| 1.4.3, 1.4.11 Contrastes | ✅ | Vérifiés sur la palette |
-| 2.5.8 Taille des cibles ≥ 24 px | ✅ | CSS |
-| Audit RGAA complet, déclaration d'accessibilité | ⬜ | Hors test |
+| Critère | Statut | Mise en œuvre | Vérification |
+|---|---|---|---|
+| 1.3.1, 3.3.2 Libellés de formulaire, structure des tableaux | ✅ | `<label>` sur chaque champ, `<table>` avec en-têtes de ligne et de colonne | Tests par `getByRole(…, { name })` ; axe |
+| 3.3.1, 3.3.3 Erreurs identifiées en texte, suggestion | ✅ | Message par champ lié par `aria-describedby`, `aria-invalid` ; erreur serveur en `role="alert"` | `toBeInvalid`, `toHaveAccessibleDescription` (session, membres) |
+| 2.1.1, 2.4.3, 2.4.7, 2.4.11 Clavier, ordre du focus, focus visible | ✅ | Éléments natifs ; dialogue React Aria (focus piégé puis rendu) ; style `:focus-visible` global | Tests pilotés par `user-event` ; relecture |
+| 4.1.2 Nom, rôle, valeur | ✅ | Éléments natifs et React Aria | Requêtes par rôle partout ; axe |
+| 4.1.3 Messages de statut | ✅ | `role="status"` / `aria-live` sur l'état d'une action et les chargements ; toasts Radix ; erreurs aussi dans la page | Tests d'acceptation (alertes, toast) |
+| 1.4.3, 1.4.11 Contrastes | ✅ | Palette en variables CSS | axe dans Chromium (e2e Playwright) ; non vérifiable sous jsdom |
+| 2.5.8 Taille des cibles ≥ 24 px | ✅ | Boutons et listes déroulantes à 44 px de haut minimum | Relecture du CSS |
+| Règles automatiques WCAG 2.0 à 2.2 A/AA | ✅ | — | axe-core sur chaque page et dialogue (Vitest), et sur 3 écrans réels (Playwright) : 0 violation |
+| Audit RGAA complet, tests avec lecteurs d’écran, déclaration d’accessibilité | ⬜ | Hors test | — |
 
 ### Outils retenus (règle n°2) [S]
 - `eslint-plugin-jsx-a11y` : analyse statique.
 - Testing Library `getByRole` : requête prioritaire, qui interroge l'arbre d'accessibilité.
-- `axe-core` : détecte environ 57 % des problèmes selon Deque. Son intégration aux tests reste à vérifier.
+- `axe-core` : détecte environ 57 % des problèmes selon Deque. Intégré aux tests Vitest (helper `src/testing/axe.ts`) et Playwright (`@axe-core/playwright`) ; le reste demande un audit manuel.
 - `@axe-core/react` est écarté : il ne prend pas en charge React 18 et versions suivantes.
 
 ---

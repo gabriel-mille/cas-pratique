@@ -6,7 +6,7 @@ Non couvert par la doc officielle : React + Vite (le tutoriel utilise Remix), Re
 
 ## Couches (dans `apps/frontend/src/`, de haut en bas)
 
-- `app` : providers globaux, configuration du router (`app/routes`), styles globaux, point d'entrée.
+- `app` : montage de l’application (`app/entrypoint` : QueryClient, toasts), router (`app/routes`), styles globaux (`app/styles`), tests d’acceptation (`app/acceptance`).
 - `pages` : un écran ou une route ; UI propre à la page, chargement, data fetching.
 - `widgets` : gros bloc d'UI autonome, réutilisé ou formant une section majeure.
 - `features` : interaction utilisateur réutilisée sur plusieurs pages. « Not everything needs to be a feature ».
@@ -52,12 +52,12 @@ Non couvert par la doc officielle : React + Vite (le tutoriel utilise Remix), Re
 - Auth : token et session dans `shared/auth` (ou à côté de `shared/api`). Jamais d'état global dans pages ou widgets.
 - Pages de connexion et d'inscription : `pages/login`, schéma de formulaire dans `pages/login/model`.
 - Router : `app/routes` ; constantes de chemins : `shared/routes`.
-- Providers (router, query client…) : `app/providers`.
+- Montage (query client, toasts) : `app/entrypoint`. Steiger refuse les segments `providers` et `store` (D35).
 - Alias d'import : `@/*` → `src/*` (seul alias montré par la doc).
 
 ## Vérification
 
-- Linter FSD officiel (en beta) : `steiger` + `@feature-sliced/steiger-plugin`, config `steiger.config.ts` avec `fsd.configs.recommended`. Pas encore installé.
+- Linter FSD officiel (en beta) : `steiger` + `@feature-sliced/steiger-plugin`, config `steiger.config.mts` avec `fsd.configs.recommended` (`src/testing` ignoré). Cible `npx nx run frontend:lint:fsd`, lancée par les hooks.
 - Le front n'applique pas les droits : il masque les actions non autorisées par confort, mais le backend reste la seule autorité.
 
 ## Style et composants
@@ -75,16 +75,16 @@ Sources : Kent C. Dodds (*Testing Trophy*, *Testing implementation details*, *Co
   - Exception : un scénario qui ne se prouve qu'avec le vrai serveur est tagué `@back-only`, avec la raison.
 - Niveaux :
   - **logique pure** (`model`, `lib`) : tests unitaires écrits d'abord (TDD) ;
-  - **intégration** (le cœur) : page ou feature rendue avec un vrai routeur en mémoire, un `QueryClient` neuf par test (`retry: false`), MSW pour le réseau (`onUnhandledRequest: 'error'`) ;
-  - **accessibilité** : `axe-core` (tags `wcag2a`, `wcag2aa`, `wcag21a`, `wcag21aa`, `wcag22aa`) sur chaque page et chaque modale ;
-  - **E2E** : 2 ou 3 parcours critiques avec Playwright + `@axe-core/playwright`, contre le vrai back.
+  - **intégration** (le cœur) : page ou feature rendue avec un vrai routeur en mémoire, un `QueryClient` neuf par test (`retry: false`), MSW 3 pour le réseau (`onUnhandledFrame: 'error'`), via la fausse API `src/testing/fake-api.ts` ;
+  - **accessibilité** : `axe-core` (tags `wcag2a`, `wcag2aa`, `wcag21a`, `wcag21aa`, `wcag22aa`) sur chaque page et chaque modale, via `src/testing/axe.ts` ;
+  - **E2E** : parcours critiques avec Playwright + `@axe-core/playwright`, contre le vrai back (`npx nx run frontend:e2e`, PostgreSQL démarré ; hors hooks).
 - Écriture :
   - requêtes par rôle en priorité (`getByRole`, puis `getByLabelText`…), via `screen` ; `user-event` plutôt que `fireEvent` ;
   - `find*` plutôt que `waitFor` ; pas d'`act` inutile ;
   - asserter ce que l'utilisateur voit, pas les requêtes envoyées ni l'état interne.
 - À ne pas faire : tester des détails d'implémentation (state, hooks, props, classes CSS), de gros snapshots, du code trivial pour gonfler la couverture, ou les bibliothèques elles-mêmes.
 - La matrice des droits (`docs/specs/permissions.md`) est testée par rôle (`it.each`) : boutons visibles ou absents.
-- Fichiers : `*.spec.ts(x)` à côté du code ; E2E dans un projet Nx séparé.
+- Fichiers : `*.spec.ts(x)` à côté du code ; parcours transverses dans `src/app/acceptance` ; outillage de test dans `src/testing` ; E2E dans `apps/frontend/e2e` (D35).
 
 ## Definition of Done (front)
 
@@ -92,3 +92,9 @@ Sources : Kent C. Dodds (*Testing Trophy*, *Testing implementation details*, *Co
 - Couverture ≥ 80 % (seuils Vitest), aucune violation axe.
 - Lint vert : ESLint (dont `testing-library` et `@vitest/eslint-plugin`) et Steiger.
 - Les hooks Git le vérifient automatiquement ; ne jamais les contourner.
+
+## Pièges connus (D35)
+
+- vitest-cucumber : chaque étape est un test Vitest. Ne pas réactiver le nettoyage automatique de Testing Library (`RTL_SKIP_AUTO_CLEANUP`) ; dans un `.feature.spec.tsx`, nettoyer avec `AfterEachScenario(resetTestState)`. Contexte d'une `Rule` : `RuleBackground`.
+- Charger une `.feature` avec `loadSpecFeature(nom)` (`node:path`) : sous jsdom, `fileURLToPath` refuse l'`URL` de jsdom.
+- Après une modification de l'API : `npx nx run frontend:generate-api`, puis committer `openapi.json` et `schema.d.ts`.
