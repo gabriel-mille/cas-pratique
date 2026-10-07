@@ -191,11 +191,11 @@ Les numéros `Qn` renvoient à `docs/specs/open-questions.md`. Les URLs des sour
 ### D26 – Chaque scénario de la spec est un test automatique, côté back et côté front
 - Choix : les fichiers `docs/specs/features/*.feature` sont exécutés tels quels avec `@amiceli/vitest-cucumber` 7.0.0 (compatible Vitest 4).
   - Vérifié le 2026-10-07 : la lecture de `action-lifecycle.feature` en français reconnaît `Contexte`, les 6 `Règle`, `Exemple` et `Plan du Scénario`.
-  - D'après sa doc, la suite échoue si un scénario ou une étape n'a pas d'implémentation. À constater lors de la mise en place.
+  - Constaté le 2026-10-07 : un scénario non implémenté fait échouer la suite (`ScenarioNotCalledError`).
 - Back : TDD piloté par les scénarios (domaine, puis cas d'usage, puis e2e).
 - Front : tests d'intégration (Testing Library + MSW + axe-core) qui implémentent les mêmes scénarios.
   - Les scénarios qui ne se prouvent pas avec une API simulée (persistance, verrou réel) sont tagués `@back-only` et couverts par le back et les E2E.
-  - Le filtrage par tag n'est pas documenté par l'outil : à vérifier, sinon chaque scénario aura au moins une assertion d'UI côté front.
+  - Constaté le 2026-10-07 : `describeFeature(feature, cb, { excludeTags: ['back-only'] })` ignore ces scénarios, et la même suite sans filtre échoue.
 - E2E : 2 ou 3 parcours critiques avec Playwright (`@nx/playwright`) contre le vrai back.
 - Sources : Kent C. Dodds (*Testing Trophy*, *How to know what to test*, *When I follow TDD*), Testing Library *Guiding principles*, doc MSW et TanStack Query *Testing*.
 - Alternatives écartées : une matrice de traçabilité tenue à la main (rien n'est vérifié automatiquement) ; `playwright-bdd` pour tout (lent, doublon avec le back).
