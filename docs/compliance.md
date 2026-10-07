@@ -30,11 +30,11 @@ Les URLs sont dans `docs/references.md`.
 | 8.3.1 Contrôle d'accès côté serveur, refus par défaut | L1 | ✅ | Guards NestJS, règles dans le domaine (D2, D9) |
 | 8.2.1 Accès par fonction | L1 | ✅ | Matrice `permissions.md` |
 | 8.2.2 Accès par donnée (IDOR/BOLA) | L1 | ✅ | Toute requête est filtrée par l'organisation du membre connecté ; un id d'une autre organisation renvoie 404 |
-| 8.4.1 Contrôles inter-organisations (cross-tenant) | L2 | ✅ | Idem ; tests dédiés |
+| 8.4.1 Contrôles inter-organisations (cross-tenant) | L2 | ✅ | Idem ; tests dédiés. En base, une clé étrangère composite interdit de rattacher une action au plan d'une autre organisation (D33) |
 | 8.3.2 Changement de droits appliqué immédiatement | L3 | ✅ | Le rôle est relu en base à chaque requête (D16) |
 | 2.2.1, 2.2.2 Validation par liste autorisée, côté serveur | L1 | ✅ | DTO + `ValidationPipe` (`whitelist`) puis invariants du domaine |
 | 2.3.1 Respect de l'ordre des étapes | L1 | ✅ | Machine à états (`state-transitions.md`) |
-| 2.3.3 Transactions | L2 | ✅ | Changement d'état et historique écrits dans la même transaction |
+| 2.3.3 Transactions | L2 | ✅ | Changement d'état et historique écrits dans la même transaction ; annulation vérifiée sur PostgreSQL (D33) |
 | 6.2.1 Mot de passe ≥ 8 caractères, 15 « strongly recommended » | L1 | ✅ | 15 (D13) |
 | 6.2.5 Aucune règle de composition | L1 | ✅ | D13 |
 | 6.2.9 Au moins 64 caractères acceptés | L2 | ✅ | D13 |
@@ -63,7 +63,7 @@ Les URLs sont dans `docs/references.md`.
 | 16.2.5 Pas d'identifiants dans les logs | L2 | ✅ | |
 | 16.4.2 Logs non modifiables | L2 | ⬜ | Relève de l'infrastructure d'hébergement |
 | 16.5.1 Erreur générique, sans stack trace | L2 | ✅ | Filtre d'exceptions NestJS |
-| 13.4.2 Pas de debug en production | L2 | 🟨 | `synchronize: true` aussi à retirer en production (migrations) |
+| 13.4.2 Pas de debug en production | L2 | 🟨 | `synchronize` retiré : schéma par migrations (D33). Reste la configuration de production (tranche 5) |
 
 ### OWASP Top 10 2025 [S]
 Il sert de liste de contrôle en relecture. Les points les plus exposés ici sont :
@@ -170,7 +170,7 @@ Aucune source ne fixe de liste d'états : la HAS demande seulement un « état d
 ### ISO 9001:2015 [S2]
 - Norme payante, non lue.
 - §6.2.2 (qui, quoi, quand, comment évaluer) et §10.2.1.d (revoir l'efficacité) : rejoignent la HAS, voir D20.
-- §10.2.2 et §7.5.3 (conserver les preuves, les protéger contre l'altération) : ✅ avec l'historique et la suppression logique.
+- §10.2.2 et §7.5.3 (conserver les preuves, les protéger contre l'altération) : ✅ avec l'historique et la suppression logique. L'historique est en ajout seul côté application ; une protection en base (trigger ou `REVOKE`) est prévue (D33).
 
 ### ISO 7101:2023 (management de la qualité en santé) [S2]
 - Seuls le titre et le domaine d'application ont été vérifiés.

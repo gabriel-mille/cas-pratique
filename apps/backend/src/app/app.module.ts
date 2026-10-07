@@ -1,6 +1,9 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { TypeOrmModule } from '@nestjs/typeorm';
+import { DatabaseModule } from '../database/database.module';
+import { databaseSettingsFromEnv, typeOrmOptions } from '../database/typeorm-options';
+import { ActionPlansModule } from '../modules/action-plans/action-plans.module';
+import { IdentityModule } from '../modules/identity/identity.module';
 
 @Module({
   imports: [
@@ -8,20 +11,24 @@ import { TypeOrmModule } from '@nestjs/typeorm';
       envFilePath: `${__dirname}/../.env`,
       isGlobal: true,
     }),
-    TypeOrmModule.forRootAsync({
-      imports: [ConfigModule],
+    DatabaseModule.forRoot({
       inject: [ConfigService],
-      useFactory: (configService: ConfigService) => ({
-        type: 'postgres',
-        host: configService.get<string>('DATABASE_HOST', 'localhost'),
-        port: configService.get<number>('DATABASE_PORT', 5432),
-        username: configService.get<string>('DATABASE_USER', 'postgres'),
-        password: configService.get<string>('DATABASE_PASSWORD', 'postgres'),
-        database: configService.get<string>('DATABASE_NAME', 'cas_pratique'),
-        autoLoadEntities: true,
-        synchronize: true,
+      useFactory: (config: ConfigService) => ({
+        ...typeOrmOptions(
+          databaseSettingsFromEnv({
+            DATABASE_HOST: config.get('DATABASE_HOST'),
+            DATABASE_PORT: config.get('DATABASE_PORT'),
+            DATABASE_USER: config.get('DATABASE_USER'),
+            DATABASE_PASSWORD: config.get('DATABASE_PASSWORD'),
+            DATABASE_NAME: config.get('DATABASE_NAME'),
+          }),
+        ),
+        // Applique au démarrage les migrations manquantes (option `migrationsRun`, doc TypeORM *DataSource options*).
+        migrationsRun: true,
       }),
     }),
+    IdentityModule,
+    ActionPlansModule,
   ],
 })
 export class AppModule {}

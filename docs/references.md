@@ -156,6 +156,11 @@ Seules sources utilisées pour les règles d'architecture et de convention du pr
 - TypeORM : entités https://typeorm.io/docs/entity/entities · migrations https://typeorm.io/docs/migrations/why
 - RFC 9457 Problem Details : https://www.rfc-editor.org/rfc/rfc9457 · RFC 9110 (ETag, If-Match, 412) : https://www.rfc-editor.org/rfc/rfc9110
 - Testcontainers Node (PostgreSQL) : https://node.testcontainers.org/modules/postgresql/
+- NestJS – Async Local Storage (cite nestjs-cls) : https://docs.nestjs.com/recipes/async-local-storage
+- nestjs-cls – plugin Transactional : https://papooch.github.io/nestjs-cls/plugins/available-plugins/transactional
+- PostgreSQL 16 – codes d'erreur (23505 unique_violation, 22P02) : https://www.postgresql.org/docs/16/errcodes-appendix.html
+- PostgreSQL 16 – index partiels (exemple 11.3, unicité conditionnelle) : https://www.postgresql.org/docs/16/indexes-partial.html
+- PostgreSQL 16 – contraintes (index des clés étrangères non automatique) : https://www.postgresql.org/docs/16/ddl-constraints.html
 - esbuild – limitation emitDecoratorMetadata : https://esbuild.github.io/content-types/#typescript-caveats
 ### Frontend
 - FSD : React Query https://feature-sliced.design/docs/guides/tech/with-react-query · requêtes API https://feature-sliced.design/docs/guides/examples/api-requests · auth https://feature-sliced.design/docs/guides/examples/auth · layout https://feature-sliced.design/docs/guides/examples/page-layout

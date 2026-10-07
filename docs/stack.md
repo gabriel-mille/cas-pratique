@@ -40,11 +40,12 @@ Règle de travail n°2 (`AGENTS.md`) : avant de coder, chercher une solution exi
 | ETag / If-Match | Intercepteur maison : ETag = version, `If-Match` comparé, réponses 412/428 | 🛠 | Express 5 ne génère que des ETag faibles, sans gérer `If-Match` |
 | Erreurs HTTP | Filtre d'exception maison au format Problem Details (RFC 9457) | 🛠 S4 | `nest-problem-details-filter` 1.10 ❌ : peu adopté (55 étoiles). Le filtre fait environ 30 lignes |
 | Contrat API | `@nestjs/swagger` **11.4.7** (OpenAPI) | ✅ | Doc NestJS v11 *OpenAPI*. Le plugin CLI n'est pas automatique avec `@nx/js:swc` → `@ApiProperty` explicites |
+| Transactions | `nestjs-cls` 7.0.1 + `@nestjs-cls/transactional` 4.0.1 + adaptateur TypeORM 2.0.1 (MIT) | ✅ | Doc NestJS *Async Local Storage* (cite `nestjs-cls`) ; doc du plugin *Transactional*. `typeorm-transactional` ❌ : monkey-patching de TypeORM (D33) |
 | Migrations | CLI TypeORM avec DataSource, cible Nx `run-commands` | ✅ | typeorm.io *Migrations* (« unsafe to use synchronize in production »). Pas de doc Nx officielle |
 | Logs | `ConsoleLogger` NestJS avec `json: true` | ✅ | Doc NestJS v11 *Logger* |
 | | `nestjs-pino` | ❌ | Inutile sans besoin de corrélation |
 | Tests unitaires et scénarios | Vitest via `@nx/vitest:configuration` + `unplugin-swc` ; les `.feature` sont exécutés avec `@amiceli/vitest-cucumber` 7.0.0 (D26) | ✅ | Le générateur Nx `@nx/vite:vitest` est déprécié. Recette NestJS *SWC/Vitest*. esbuild ne gère pas `emitDecoratorMetadata` (doc esbuild) |
-| Tests d'intégration | `@testcontainers/postgresql` 12.2 | ✅ | node.testcontainers.org ; base isolée par suite |
+| Tests d'intégration | `@testcontainers/postgresql` 12.2, `postgres:16-alpine`, migrations réelles ; cible `test-integration` au pre-push (Docker requis) | ✅ | node.testcontainers.org ; contrats de repository rejoués (D33) |
 | Tests e2e HTTP | `supertest` 7.3 | ✅ | Doc NestJS v11 *Testing* |
 | Générateurs `@nx/nest` | `module`, `controller`, `service` au cas par cas, avec `--path` vers la bonne couche | ✅ | `resource` produit un CRUD non DDD → ❌ |
 
@@ -77,7 +78,7 @@ Règle de travail n°2 (`AGENTS.md`) : avant de coder, chercher une solution exi
 |---|---|---|---|
 | Lib partagée | `@nx/js:library` dans `packages/` (enums, types du contrat) | ✅ | `workspaces` du `package.json` racine ; générateur Nx |
 | Couches DDD et FSD dans une même app | Nx `enforce-module-boundaries` ne contrôle que les dépendances entre projets → Steiger côté front, relecture côté back | ✅ [D] | nx.dev *Enforce module boundaries* |
-| Hooks Git | husky 9 + commitlint (`commit-msg`) ; `pre-commit` : hook global de l'utilisateur s'il existe, puis `nx affected -t lint typecheck test` ; `pre-push` : `nx affected -t lint typecheck test build` | ✅ S7 | Doc commitlint *Local setup* ; nx.dev *affected*. Husky remplace le `core.hooksPath` global : `.husky/pre-commit` le rappelle (D27) |
+| Hooks Git | husky 9 + commitlint (`commit-msg`) ; `pre-commit` : hook global de l'utilisateur s'il existe, puis `nx affected -t lint typecheck test` ; `pre-push` : `nx affected -t lint typecheck test test-integration build` | ✅ S7 | Doc commitlint *Local setup* ; nx.dev *affected*. Husky remplace le `core.hooksPath` global : `.husky/pre-commit` le rappelle (D27) |
 | CI | Aucune : tout est vérifié en local par les hooks | ❌ S8 | Choix du projet pour un test technique (D27) |
 
 ## Choix tranchés (2026-10-07)

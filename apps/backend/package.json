@@ -72,6 +72,39 @@
             "buildTarget": "backend:build:production"
           }
         }
+      },
+      "test-integration": {
+        "executor": "nx:run-commands",
+        "options": {
+          "command": "vitest run --config apps/backend/vitest.integration.config.mts"
+        }
+      },
+      "migration-generate": {
+        "executor": "nx:run-commands",
+        "dependsOn": [
+          "build"
+        ],
+        "options": {
+          "command": "typeorm migration:generate --pretty -d apps/backend/dist/src/database/data-source.js apps/backend/src/database/migrations/{args.name}"
+        }
+      },
+      "migration-run": {
+        "executor": "nx:run-commands",
+        "dependsOn": [
+          "build"
+        ],
+        "options": {
+          "command": "typeorm migration:run -d apps/backend/dist/src/database/data-source.js"
+        }
+      },
+      "migration-revert": {
+        "executor": "nx:run-commands",
+        "dependsOn": [
+          "build"
+        ],
+        "options": {
+          "command": "typeorm migration:revert -d apps/backend/dist/src/database/data-source.js"
+        }
       }
     }
   },
