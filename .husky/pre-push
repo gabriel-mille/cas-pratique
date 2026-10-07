@@ -1,2 +1,2 @@
-# Vérification complète avant de publier (D27).
-npx nx affected -t lint typecheck test build --base=origin/main
+# Vérification complète avant de publier (D27). Les tests d'intégration exigent Docker (D33).
+npx nx affected -t lint typecheck test test-integration build --base=origin/main
