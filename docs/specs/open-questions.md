@@ -25,3 +25,16 @@ La table ci-dessous est conservée comme trace du raisonnement.
 | Q17 | « Utilisateur » désigne à la fois un compte et un rôle : quel vocabulaire ? | Compte = « membre » ; rôle = « Utilisateur » | Lever l'ambiguïté dans le code |
 | Q18 | Champs obligatoires et longueurs (titre, description) ? | Titre obligatoire, description facultative | À confirmer |
 | Q19 | Qui peut lister les membres de l'organisation ? | L'Administrateur | Nécessaire pour gérer les rôles |
+
+## Questions issues du recensement des normes (`docs/compliance.md`)
+
+| # | Question | Proposition | Source |
+|---|---|---|---|
+| Q20 | Niveau de sécurité visé | ASVS **L2**, écarts justifiés par écrit (dont la MFA, prévue mais non implémentée) | ASVS 5.0 « most applications should be striving to achieve this level » ; CNIL 2022-100 §11 |
+| Q21 | Déconnexion, retrait d'un membre et changement de rôle avec un JWT | À chaque requête, relire en base l'appartenance (active, rôle) et une date `sessionsValidAfter` ; la déconnexion ou le retrait la met à jour. Jeton à durée de vie courte | ASVS 7.4.1 (accepte une « date limite par utilisateur »), 7.4.2, 8.3.2 |
+| Q22 | Limiter les tentatives de connexion | `@nestjs/throttler` (module officiel) par IP + email, sans bloquer le compte | ASVS 6.1.1, 6.3.1 (L1) ; ANSSI R10 ; CNIL §43 |
+| Q23 | Refuser les mots de passe courants | Appliquer dès la v1 avec une liste publique reconnue (source à vérifier avant de choisir) | ASVS 6.2.4 (L1) ; CNIL §37 ; NIST |
+| Q24 | Expiration des mots de passe admin | Non : ni le NIST ni l'ASVS (6.2.10) ne la recommandent ; l'ANSSI (R25) et la CNIL (§54) la permettent pour les comptes à privilèges. Divergence notée | ASVS, NIST, ANSSI, CNIL |
+| Q25 | Pilote, échéance, indicateur et efficacité d'une action (attendus HAS) | Non demandés par l'énoncé → 🟨 prévus et documentés, le modèle doit pouvoir les ajouter | Fiche pédagogique HAS 2025 ; critères 2.4-06/07 ; ISO 9001 §6.2.2, §10.2 [S2] |
+| Q26 | Données patients saisies dans les descriptions libres (risque HDS) | Avertissement dans le formulaire (« ne saisissez pas de données patients ») ; règle à inscrire dans les conditions d'utilisation (hors test) | Note DSSIS 2019 (« même pour une partie seulement ») |
+| Q27 | Journaliser les connexions et les refus d'accès | Oui, dans les logs applicatifs (sans identifiants ni mots de passe) ; stockage séparé hors périmètre | ASVS 16.3.1, 16.3.2 ; CNIL 2021-122 |
