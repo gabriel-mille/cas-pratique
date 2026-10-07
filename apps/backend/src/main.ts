@@ -1,8 +1,9 @@
 import { ConsoleLogger, Logger } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
-import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app/app.module';
 import { configureHttp, GLOBAL_PREFIX } from './app/configure-http';
+import { buildOpenApiDocument } from './app/openapi';
 
 async function bootstrap() {
   // Logs JSON (ConsoleLogger `json`, NestJS ≥ 11) : exploitables par un collecteur (D22).
@@ -12,12 +13,7 @@ async function bootstrap() {
 
   // Contrat OpenAPI, source des types du front (D26) ; non exposé en production (D34).
   if (process.env['NODE_ENV'] !== 'production') {
-    const config = new DocumentBuilder()
-      .setTitle('Qualineo – Plans d’actions')
-      .setVersion('1.0')
-      .addCookieAuth('session')
-      .build();
-    SwaggerModule.setup(`${GLOBAL_PREFIX}/docs`, app, () => SwaggerModule.createDocument(app, config));
+    SwaggerModule.setup(`${GLOBAL_PREFIX}/docs`, app, () => buildOpenApiDocument(app));
   }
 
   const port = process.env['PORT'] || 3000;

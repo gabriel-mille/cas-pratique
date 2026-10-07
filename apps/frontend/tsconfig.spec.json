@@ -13,7 +13,17 @@
     ],
     "jsx": "react-jsx",
     "module": "esnext",
-    "moduleResolution": "bundler"
+    "moduleResolution": "bundler",
+    "paths": {
+      "@/*": [
+        "./src/*"
+      ]
+    },
+    "lib": [
+      "es2022",
+      "dom",
+      "dom.iterable"
+    ]
   },
   "include": [
     "vite.config.ts",
@@ -28,7 +38,9 @@
     "src/**/*.spec.js",
     "src/**/*.test.jsx",
     "src/**/*.spec.jsx",
-    "src/**/*.d.ts"
+    "src/**/*.d.ts",
+    "src/testing/**/*.ts",
+    "src/testing/**/*.tsx"
   ],
   "references": [
     {

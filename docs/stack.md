@@ -59,17 +59,17 @@ Règle de travail n°2 (`AGENTS.md`) : avant de coder, chercher une solution exi
 | Client HTTP | `fetch` natif dans `shared/api` + types générés par `openapi-typescript` 7.13 | ✅ | Guide FSD *Handling API requests* (cite openapi-typescript et orval) |
 | | `openapi-fetch` | ❌ | Version pré-1.0 |
 | Conflit 412 | Logique maison : renvoyer `If-Match`, sur 412 invalider la requête et prévenir l'utilisateur | 🛠 | Aucune bibliothèque ne le gère |
-| Formulaires | `useActionState` (React 19) + zod 4 | ✅ | react.dev ; le guide FSD *Auth* utilise zod dans `model` |
+| Formulaires | `<form>` natif + zod 4 (`shared/lib/form`) + mutation TanStack Query | ✅ | Le guide FSD *Auth* utilise zod dans `model`. `useActionState` écarté à l’usage : doublait l’état de la mutation (D35) |
 | | react-hook-form | ❌ | Formulaires simples, on l'ajoutera si le besoin grandit |
-| Composants accessibles | React Aria Components 1.21 (dialogues, menus, sélecteurs), dans `shared/ui` ; HTML natif ailleurs | ✅ S6 | Documentation de tests avec lecteurs d'écran la plus détaillée parmi celles consultées. Aucun classement neutre trouvé |
+| Composants accessibles | React Aria Components 1.21 pour le dialogue modal, dans `shared/ui` ; HTML natif ailleurs (dont `<select>`) | ✅ S6 | Documentation de tests avec lecteurs d'écran la plus détaillée parmi celles consultées. Aucun classement neutre trouvé |
 | Style | CSS Modules (natif Vite, défaut des générateurs Nx) + variables CSS ; tokens et reset dans `app/styles`, composants stylés dans `shared/ui` | ✅ | Doc Vite *CSS Modules* ; FSD *Layers* (`app/styles`, `shared/ui`). React Aria expose ses états en attributs `data-*`. Tailwind v4 ❌ : le générateur Nx 22 est obsolète (installe la v3) ; vanilla-extract ❌ |
 | Notifications | `@radix-ui/react-toast` 1.2, encapsulé dans `shared/ui` ; une erreur critique s'affiche aussi dans la page | ✅ | Doc Radix (aria-live, F8, pause au survol). Toast React Aria ❌ : exporté en `UNSTABLE_` en 1.21.1. WCAG 4.1.3 |
-| Tests | `@testing-library/react` 16.3 + `user-event` 14.6 + MSW **v3** + `@amiceli/vitest-cucumber` 7.0.0 | ✅ | Doc officielle de chaque outil. Stratégie : `apps/frontend/AGENTS.md`, D26 |
-| Tests E2E | Playwright 1.63 via `@nx/playwright` + `@axe-core/playwright` 4.13 | ✅ | nx.dev *Playwright* ; playwright.dev *Accessibility testing*. Cypress ❌ |
+| Tests | `@testing-library/react` 16.3 + `user-event` 14.6 + `jest-dom` 6 + MSW **v3** (`onUnhandledFrame`) + `@amiceli/vitest-cucumber` 7.0.0 | ✅ | Doc officielle de chaque outil. Stratégie : `apps/frontend/AGENTS.md`, D26, D35 |
+| Tests E2E | Playwright 1.63 via `@nx/playwright:configuration` (dans `apps/frontend/e2e`, Chromium) + `@axe-core/playwright` 4.13 ; lancement manuel | ✅ | nx.dev *Playwright* ; playwright.dev *Accessibility testing*. Cypress ❌ |
 | Lint des tests | `eslint-plugin-testing-library` 7.16 (`flat/react`) + `@vitest/eslint-plugin` 1.6 (`recommended`) | ✅ | READMEs officiels. `eslint-plugin-vitest` ❌ (abandonné) |
 | Tests d'accessibilité | `axe-core` 4.14 appelé dans un helper de test | ✅ | `vitest-axe` ❌ (sans version stable depuis 2022) ; `jest-axe` ne documente pas Vitest |
 | Lint | ESLint 9 flat config + `@nx/eslint-plugin` (`flat/react`) + `eslint-plugin-jsx-a11y` en `strict` | ✅ | `jsx-a11y` exige ESLint ≤ 9 ; `nx add @nx/eslint` installait ESLint 8.57, version 9 installée explicitement |
-| Lint FSD | `steiger` 0.7 + `@feature-sliced/steiger-plugin`, en script `lint:fsd`, exposé comme cible Nx | ✅ | README Steiger (encore en bêta). Nx expose les `scripts` comme cibles |
+| Lint FSD | `steiger` 0.7 + `@feature-sliced/steiger-plugin` 0.8 (`fsd.configs.recommended`), script `lint:fsd` exposé comme cible Nx et lancé par les hooks | ✅ | README Steiger (encore en bêta). Nx expose les `scripts` comme cibles |
 | Exemple de référence | `ruslan4432013/fsd-react-query-example` | – | Lié depuis la doc FSD, mais communautaire |
 
 ## Transverse
@@ -78,7 +78,7 @@ Règle de travail n°2 (`AGENTS.md`) : avant de coder, chercher une solution exi
 |---|---|---|---|
 | Lib partagée | `@nx/js:library` dans `packages/` (enums, types du contrat) | ✅ | `workspaces` du `package.json` racine ; générateur Nx |
 | Couches DDD et FSD dans une même app | Nx `enforce-module-boundaries` ne contrôle que les dépendances entre projets → Steiger côté front, relecture côté back | ✅ [D] | nx.dev *Enforce module boundaries* |
-| Hooks Git | husky 9 + commitlint (`commit-msg`) ; `pre-commit` : hook global de l'utilisateur s'il existe, puis `nx affected -t lint typecheck test` ; `pre-push` : `nx affected -t lint typecheck test test-integration build` | ✅ S7 | Doc commitlint *Local setup* ; nx.dev *affected*. Husky remplace le `core.hooksPath` global : `.husky/pre-commit` le rappelle (D27) |
+| Hooks Git | husky 9 + commitlint (`commit-msg`) ; `pre-commit` : hook global de l’utilisateur s’il existe, puis `nx affected -t lint lint:fsd typecheck test` ; `pre-push` : `nx affected -t lint lint:fsd typecheck test test-integration build` | ✅ S7 | Doc commitlint *Local setup* ; nx.dev *affected*. Husky remplace le `core.hooksPath` global : `.husky/pre-commit` le rappelle (D27) |
 | CI | Aucune : tout est vérifié en local par les hooks | ❌ S8 | Choix du projet pour un test technique (D27) |
 
 ## Choix tranchés (2026-10-07)

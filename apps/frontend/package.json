@@ -1,5 +1,24 @@
 {
   "name": "frontend",
   "version": "0.0.1",
-  "private": true
+  "private": true,
+  "scripts": {
+    "lint:fsd": "steiger ./src"
+  },
+  "nx": {
+    "targets": {
+      "generate-api": {
+        "executor": "nx:run-commands",
+        "dependsOn": [
+          {
+            "projects": ["backend"],
+            "target": "openapi"
+          }
+        ],
+        "options": {
+          "command": "openapi-typescript apps/frontend/src/shared/api/openapi.json -o apps/frontend/src/shared/api/schema.d.ts"
+        }
+      }
+    }
+  }
 }

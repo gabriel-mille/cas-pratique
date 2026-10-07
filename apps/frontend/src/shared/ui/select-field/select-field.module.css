@@ -1,0 +1,28 @@
+.field {
+  display: grid;
+  gap: 0.25rem;
+  margin-block-end: 1rem;
+}
+
+.label {
+  font-weight: 600;
+}
+
+.control {
+  font: inherit;
+  min-height: 2.75rem;
+  padding: 0.25rem 0.5rem;
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius);
+  background: var(--color-surface);
+  color: var(--color-text);
+}
+
+.visuallyHidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}

@@ -1,0 +1,58 @@
+.section {
+  margin-block: 2rem;
+}
+
+.addForm {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
+  align-items: end;
+  gap: 0 1rem;
+}
+
+.addForm > button {
+  margin-block-end: 1rem;
+}
+
+.password {
+  font-size: 1.125rem;
+  font-weight: 700;
+  user-select: all;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table th,
+.table td {
+  padding: 0.5rem;
+  border-block-end: 1px solid var(--color-border);
+  text-align: start;
+  vertical-align: middle;
+}
+
+.caption {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.roleForm {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.roleForm > div {
+  margin: 0;
+}
+
+.dialogActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}

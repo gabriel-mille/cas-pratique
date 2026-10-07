@@ -1,16 +1,18 @@
 import { StrictMode } from 'react';
-import { BrowserRouter } from 'react-router-dom';
-import * as ReactDOM from 'react-dom/client';
-import App from './app/app';
+import { createRoot } from 'react-dom/client';
+import { createBrowserRouter, RouterProvider } from 'react-router';
+import { AppProviders, createQueryClient, routes } from './app';
+import './app/styles/global.css';
 
-const root = ReactDOM.createRoot(
-  document.getElementById('root') as HTMLElement
-);
+const root = document.getElementById('root');
+if (!root) {
+  throw new Error('Élément #root absent de index.html');
+}
 
-root.render(
+createRoot(root).render(
   <StrictMode>
-    <BrowserRouter>
-      <App />
-    </BrowserRouter>
-  </StrictMode>
+    <AppProviders queryClient={createQueryClient()}>
+      <RouterProvider router={createBrowserRouter(routes)} />
+    </AppProviders>
+  </StrictMode>,
 );
