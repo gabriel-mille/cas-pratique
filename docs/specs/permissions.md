@@ -1,20 +1,23 @@
 # Matrice rôles × opérations
 
-Modèle NIST RBAC : membres → rôles → permissions. Toutes les opérations sont limitées à l'organisation du membre connecté.
+Modèle NIST RBAC : comptes → appartenance (`Membership`) → rôle → permissions. Toutes les opérations sont limitées à l'organisation du membre connecté.
 
-| Opération | Utilisateur | Gestionnaire | Administrateur | Origine |
+Rôles : Utilisateur = `MEMBER`, Gestionnaire = `MANAGER`, Administrateur = `ADMIN` (D12).
+
+| Opération | Utilisateur | Gestionnaire | Admin | Réf. |
 |---|---|---|---|---|
-| Créer un compte (organisation + admin) | visiteur non connecté | | | [Énoncé] |
-| Ajouter un membre et lui donner un rôle | ❌ | ❌ | ✅ | [Énoncé] |
-| Modifier le rôle d'un membre / retirer un membre | ❌ | ❌ | ? | Q10 |
-| Lister les membres | ? | ? | ? | Q19 |
-| Créer un plan d'actions | ❌ | ❌ | ✅ | [Énoncé] |
-| Ajouter une action à un plan | ❌ | ❌ | ✅ | [Énoncé] (Q7) |
-| Modifier titre / description (plan, action) | ? | ? | ? | Q5 |
-| Supprimer un plan | ? | ? | ? | Q6 |
-| Supprimer une action | ❌ | ❌ | ✅ | [Énoncé] |
-| Transitions À faire → En cours → À valider | ❌ | ✅ | ? | [Énoncé] / Q1 |
-| Transition → Terminé | ❌ | ❌ | ✅ | [Énoncé] |
-| Voir la liste des actions et le détail | ✅ | ✅ | ✅ | [Énoncé] |
-
-Un ❌ sur une ligne [Énoncé] est déduit des formules « l'administrateur doit pouvoir » et « le gestionnaire doit pouvoir ». C'est une lecture restrictive (moindre privilège), à confirmer en Q1.
+| Créer un compte (organisation + admin) | visiteur non connecté | | | US1 |
+| Se connecter, changer son mot de passe | ✅ | ✅ | ✅ | US0, D8 |
+| Lister les membres | ❌ | ❌ | ✅ | US2b, D9 |
+| Ajouter un membre avec un rôle | ❌ | ❌ | ✅ | US2 |
+| Changer le rôle d'un **autre** membre | ❌ | ❌ | ✅ | US2b, D9 |
+| Retirer un **autre** membre | ❌ | ❌ | ✅ | US2b, D9 |
+| Changer son propre rôle / se retirer | ❌ | ❌ | ❌ | US2b, D9 |
+| Créer / modifier un plan | ❌ | ❌ | ✅ | US3, US3b, D6 |
+| Ajouter / modifier une action | ❌ | ❌ | ✅ | US3, US3b, D6 |
+| À faire → En cours → À valider | ❌ | ✅ | ✅ | US4, D2 |
+| À valider → Terminé | ❌ | ❌ | ✅ | US5 |
+| Refuser : À valider → En cours (motif) | ❌ | ❌ | ✅ | D4 |
+| Supprimer une action (suppression logique) | ❌ | ❌ | ✅ | US6, D7 |
+| Supprimer un plan | hors périmètre | | | D7 |
+| Voir les plans, les actions et leur détail | ✅ | ✅ | ✅ | US7 |

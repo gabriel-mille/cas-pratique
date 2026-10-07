@@ -1,6 +1,8 @@
 # Questions ouvertes
 
-Points que l'énoncé ne spécifie pas. Chaque proposition est **une suggestion à valider**, pas une décision.
+Points que l'énoncé ne spécifie pas. **Toutes ces questions ont été tranchées le 2026-10-07.** La décision retenue, qui peut différer de la proposition initiale, se trouve dans `docs/decisions.md` (D2 à D14).
+
+La table ci-dessous est conservée comme trace du raisonnement.
 
 | # | Question | Proposition | Raison |
 |---|---|---|---|

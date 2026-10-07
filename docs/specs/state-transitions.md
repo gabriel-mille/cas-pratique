@@ -1,21 +1,31 @@
 # Cycle de vie d'une action
 
-Technique : table de transitions d'états (ISTQB CTFL v4.0.1 §4.2.4).
+Technique utilisée : table de transitions d'états (ISTQB CTFL v4.0.1 §4.2.4).
 - Les lignes sont l'état courant, les colonnes l'état cible.
-- Chaque case indique **qui** peut faire la transition.
-- Une case « ? » est une transition que l'énoncé ne spécifie pas : elle peut être invalide, ou avoir été oubliée.
+- Chaque case dit qui peut faire la transition.
+- Une case **interdit** est une transition invalide, qui doit être refusée et testée.
+
+Décisions appliquées : D2, D3, D4 (`docs/decisions.md`).
 
 ```
-À faire ──(Gestionnaire)──▶ En cours ──(Gestionnaire)──▶ À valider ──(Administrateur)──▶ Terminé
+            (Gestionnaire, Admin)        (Gestionnaire, Admin)         (Admin)
+À faire ──────────────────────▶ En cours ──────────────────────▶ À valider ─────────▶ Terminé
+                                    ▲                                  │
+                                    └──── refus, motif obligatoire ────┘
+                                                (Admin)
 ```
 
 | Depuis \ Vers | À faire | En cours | À valider | Terminé |
 |---|---|---|---|---|
-| **À faire** | – | Gestionnaire [Énoncé] · Admin ? (Q1) | ? (Q3) | Admin ? (Q2) |
-| **En cours** | ? (Q3) | – | Gestionnaire [Énoncé] · Admin ? (Q1) | Admin ? (Q2) |
-| **À valider** | ? (Q3) | ? refus de validation (Q3) | – | Administrateur [Énoncé] |
-| **Terminé** | ? réouverture (Q3) | ? (Q3) | ? (Q3) | – |
+| **À faire** | – | Gestionnaire, Admin | interdit | interdit |
+| **En cours** | interdit | – | Gestionnaire, Admin | interdit |
+| **À valider** | interdit | Admin (refus + motif) | – | Admin |
+| **Terminé** | interdit | interdit | interdit | – |
 
-- Rôle Utilisateur : aucune transition, l'énoncé ne lui en donne aucune.
-- État initial à la création : voir Q4.
-- Couverture de tests visée (ISTQB « all transitions ») : chaque transition valide **et** chaque tentative de transition invalide a son test.
+Règles complémentaires :
+- Le rôle Utilisateur (`MEMBER`) ne peut faire aucune transition.
+- À la création, une action est toujours à l'état **À faire**.
+- Une action Terminée est définitive.
+- Chaque transition réussie est enregistrée dans l'historique : de, vers, auteur, date, commentaire (D5).
+- Une transition sur une version périmée est rejetée (D14).
+- Couverture de tests visée (ISTQB « all transitions ») : les 4 transitions valides, et une tentative pour chaque case interdite et pour chaque rôle non autorisé.
