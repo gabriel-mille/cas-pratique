@@ -14,3 +14,4 @@ Journal des demandes significatives faites à l'assistant (Claude Code), dans l'
 10. Ajout de deux règles de méthode : « ne pas réinventer la roue, se renseigner avant d'attaquer » et « recenser et suivre les normes (sécurité, ISO, domaine santé) ; si non demandé, au moins noter et prévoir » → règles n°2 et n°3 de `AGENTS.md`.
 11. « Oui » à la recherche des normes → 4 recherches parallèles (sécurité, données de santé, qualité, accessibilité) → `docs/compliance.md` et questions Q20–Q27.
 12. Validation de Q20–Q27 → décisions D15–D22.
+13. « Avant d'attaquer, fait-on aussi la recherche pour la règle n°2 (ne pas réinventer la roue) ? » → 3 recherches parallèles (outillage Nx, backend, frontend) → `docs/stack.md`, questions S1–S8.
