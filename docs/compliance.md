@@ -53,17 +53,17 @@ Les URLs sont dans `docs/references.md`.
 | 7.4.1 La déconnexion invalide le jeton | **L1** | ✅ | `sessionsValidAfter` par utilisateur (D16) |
 | 7.4.2 Couper les sessions d'un compte désactivé | **L1** | ✅ | L'appartenance est relue à chaque requête : un membre retiré est refusé immédiatement (D16, D32) |
 | 7.4.3 Proposer de fermer les sessions après un changement de mot de passe | L2 | ✅ | Fermées d'office : `sessionsValidAfter` (D32) |
-| 7.3.1, 7.3.2 Expiration après inactivité et durée maximale | L2 | ✅ | Durée de vie courte du jeton |
+| 7.3.1, 7.3.2 Expiration après inactivité et durée maximale | L2 | ✅ | 30 min d’inactivité (jeton renouvelé), 12 h maximum (D34, tests unitaires) |
 | 7.4.5 Un admin termine les sessions d'un membre | L2 | 🟨 | Mécanisme D16 prêt ; pas d'écran dédié |
 | 3.3.1–3.3.4 Cookie `__Host-`, Secure, HttpOnly, SameSite | L1-L2 | ✅ | D13 |
 | 3.4.1–3.4.6 HSTS, CSP, nosniff, Referrer-Policy, frame-ancestors | L1-L2 | ✅ | `helmet` (recommandé par la doc NestJS) |
-| 3.4.2 CORS : origine fixe | L1 | ✅ | Origine du frontend uniquement |
-| 3.5.1–3.5.3 Anti-CSRF, pas de GET qui modifie | L1 | ✅ | SameSite + JSON (préflight CORS) ; GET en lecture seule |
+| 3.4.2 CORS : origine fixe | L1 | ✅ | Aucun en-tête CORS émis : front et API de même origine (D34) |
+| 3.5.1–3.5.3 Anti-CSRF, pas de GET qui modifie | L1 | ✅ | `SameSite=Strict` + contrôle d’`Origin` (D25, testé en e2e) ; GET en lecture seule |
 | 16.2.1, 16.3.1, 16.3.2 Journaliser les authentifications et les refus d'accès | L2 | ✅ | D22 |
 | 16.2.5 Pas d'identifiants dans les logs | L2 | ✅ | |
 | 16.4.2 Logs non modifiables | L2 | ⬜ | Relève de l'infrastructure d'hébergement |
 | 16.5.1 Erreur générique, sans stack trace | L2 | ✅ | Filtre d'exceptions NestJS |
-| 13.4.2 Pas de debug en production | L2 | 🟨 | `synchronize` retiré : schéma par migrations (D33). Reste la configuration de production (tranche 5) |
+| 13.4.2 Pas de debug en production | L2 | 🟨 | `synchronize` retiré : schéma par migrations (D33). Swagger désactivé en production (D34). Reste la configuration d’hébergement |
 
 ### OWASP Top 10 2025 [S]
 Il sert de liste de contrôle en relecture. Les points les plus exposés ici sont :
