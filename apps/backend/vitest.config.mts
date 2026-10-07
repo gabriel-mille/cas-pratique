@@ -37,6 +37,16 @@ export default defineConfig(() => ({
         'src/database/**',
         'src/**/infrastructure/typeorm/**',
         'src/**/testing/**',
+        // Adaptateurs HTTP sans logique propre : couverts par les e2e (`app/http-api.int.spec.ts`, D29).
+        'src/app/app.module.ts',
+        'src/app/configure-http.ts',
+        'src/**/presentation/*.controller.ts',
+        'src/**/presentation/*.dto.ts',
+        'src/**/presentation/session.guard.ts',
+        'src/**/presentation/route-access.ts',
+        'src/shared/presentation/problem-details.filter.ts',
+        'src/shared/presentation/security-log.ts',
+        'src/shared/infrastructure/system-clock.ts',
       ],
       // Seuils de D27 : outil de vigilance, pas un objectif en soi.
       thresholds: { lines: 80, functions: 80, branches: 80, statements: 80 },
