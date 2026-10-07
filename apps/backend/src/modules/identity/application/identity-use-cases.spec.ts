@@ -154,4 +154,17 @@ describe('Cas d’usage identity, hors scénarios de la spec', () => {
       await expect(queries.currentMember({ ...alice, userId: 'inconnu' })).rejects.toThrow(NotFoundError);
     });
   });
+
+  describe('IdentityQueries.userNames', () => {
+    it('rend le nom des comptes connus, même retirés, et ignore les autres', async () => {
+      const queries = new IdentityQueries(fixture.users, fixture.organizations, fixture.memberships);
+      const { userId } = await fixture.addMember(alice, 'carla@lilas.fr');
+      await new RemoveMember(fixture.memberships, fixture.clock).execute({ actor: alice, userId });
+
+      const names = await queries.userNames([alice.userId, userId, 'inconnu']);
+
+      expect([...names.keys()]).toEqual(expect.arrayContaining([alice.userId, userId]));
+      expect(names.has('inconnu')).toBe(false);
+    });
+  });
 });

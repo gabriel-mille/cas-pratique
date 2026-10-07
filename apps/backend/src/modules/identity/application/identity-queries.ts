@@ -52,4 +52,9 @@ export class IdentityQueries {
       organizationName: organization.name,
     };
   }
+
+  /** Noms des auteurs de l'historique des actions (D34) : un compte retiré garde son nom. */
+  async userNames(userIds: string[]): Promise<Map<string, string>> {
+    return new Map((await this.users.findByIds(userIds)).map((user) => [user.id, user.snapshot().name]));
+  }
 }

@@ -5,6 +5,8 @@ import { length } from '../../../shared/domain/text';
 export const PASSWORD_MIN_LENGTH = 15;
 export const PASSWORD_MAX_LENGTH = 128;
 
+export const PASSWORD_BLOCKLIST = Symbol('PASSWORD_BLOCKLIST');
+
 /** Mots de passe courants (ASVS 6.2.4, D18). L'implémentation compare sans tenir compte de la casse. */
 export interface PasswordBlocklist {
   has(password: string): boolean;

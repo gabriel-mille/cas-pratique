@@ -1,6 +1,6 @@
 import { ForbiddenError, InvalidTransitionError, ValidationError } from '../../../shared/domain/errors';
 import { Role } from '../../../shared/domain/role';
-import { optionalDescription, requireTitle } from '../../../shared/domain/text';
+import { length, optionalDescription, REASON_MAX_LENGTH, requireTitle } from '../../../shared/domain/text';
 import { ActionStatus, findTransition } from './action-status';
 
 export interface StatusChanger {
@@ -109,6 +109,9 @@ export class Action {
     const trimmedReason = reason?.trim() || null;
     if (transition.reasonRequired && !trimmedReason) {
       throw new ValidationError('Le motif est obligatoire');
+    }
+    if (trimmedReason && length(trimmedReason) > REASON_MAX_LENGTH) {
+      throw new ValidationError(`Le motif dépasse ${REASON_MAX_LENGTH} caractères`);
     }
     this.props.status = to;
     this.props.statusChanges.push({ from, to, by: by.userId, at, reason: trimmedReason });

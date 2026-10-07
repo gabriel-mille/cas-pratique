@@ -28,7 +28,7 @@ Règle de travail n°2 (`AGENTS.md`) : avant de coder, chercher une solution exi
 | Hachage | `node:crypto` scrypt, N=2^17, r=8, p=1, `timingSafeEqual` | ✅ | OWASP Password Storage (paramètres) ; doc NestJS v12. `maxmem` = 2·128·N·r : la limite par défaut de Node (32 Mio) refuse N=2^17 (doc Node vérifiée, D32) |
 | Limitation de débit | `@nestjs/throttler` 6.7.1, `getTracker` surchargé (IP + email) | ✅ | Doc NestJS *Rate limiting* |
 | En-têtes | `helmet` 8.3.0, appliqué en premier | ✅ | Doc NestJS *Helmet* |
-| CORS | `app.enableCors({ origin: <front>, credentials: true })` | ✅ | Doc NestJS *CORS* |
+| CORS | Aucun : proxy Vite en dev, même origine en production (D34) | ✅ | Pas d’API cross-origin à ouvrir |
 | CSRF | Cookie `SameSite=Strict` + vérification de l'en-tête `Origin` sur les écritures + JSON uniquement | ✅ S2 | OWASP *CSRF Prevention*. `csrf-csrf` 4.0.3 (proposé par la doc v11) ❌ : une dépendance de plus sans gain ici |
 | Validation des entrées | `class-validator` 0.15 + `class-transformer` + `ValidationPipe` (`whitelist`, `forbidNonWhitelisted`) | ✅ | Doc NestJS v11 *Validation* ; requis par `@nestjs/swagger` |
 | | `nestjs-zod` | ❌ | Non officiel |
@@ -37,7 +37,7 @@ Règle de travail n°2 (`AGENTS.md`) : avant de coder, chercher une solution exi
 | Événements de domaine | Interface maison dans le domaine ; `@nestjs/cqrs` **11.0.3** seulement si des handlers sont nécessaires | ✅ | La doc v11 *CQRS* permet de garder le domaine « completely framework-agnostic » |
 | Suppression logique | `@DeleteDateColumn` (exclusion par défaut, `withDeleted`) | ✅ | typeorm.io *Entities*, *Find options* |
 | Verrou optimiste | `@VersionColumn` + `update().where("id = :id AND version = :v")`, puis `affected === 0` → conflit | 🛠 | Aucune option TypeORM ne vérifie la version à l'écriture (code lu dans node_modules) |
-| ETag / If-Match | Intercepteur maison : ETag = version, `If-Match` comparé, réponses 412/428 | 🛠 | Express 5 ne génère que des ETag faibles, sans gérer `If-Match` |
+| ETag / If-Match | Décorateur de paramètre maison `@IfMatch()` (D34) : ETag = version, `If-Match` comparé, réponses 412/428 | 🛠 | Express 5 ne génère que des ETag faibles, sans gérer `If-Match` |
 | Erreurs HTTP | Filtre d'exception maison au format Problem Details (RFC 9457) | 🛠 S4 | `nest-problem-details-filter` 1.10 ❌ : peu adopté (55 étoiles). Le filtre fait environ 30 lignes |
 | Contrat API | `@nestjs/swagger` **11.4.7** (OpenAPI) | ✅ | Doc NestJS v11 *OpenAPI*. Le plugin CLI n'est pas automatique avec `@nx/js:swc` → `@ApiProperty` explicites |
 | Transactions | `nestjs-cls` 7.0.1 + `@nestjs-cls/transactional` 4.0.1 + adaptateur TypeORM 2.0.1 (MIT) | ✅ | Doc NestJS *Async Local Storage* (cite `nestjs-cls`) ; doc du plugin *Transactional*. `typeorm-transactional` ❌ : monkey-patching de TypeORM (D33) |

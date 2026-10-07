@@ -98,7 +98,7 @@ describeFeature(feature, ({ Background, Rule }) => {
       plans = new InMemoryActionPlanRepository();
       actions = new InMemoryActionRepository();
       clock = new FixedClock(new Date('2026-10-07T10:00:00Z'));
-      queries = new ActionPlanQueries(plans, actions);
+      queries = new ActionPlanQueries(plans, actions, { namesOf: async () => new Map() });
       error = undefined;
     });
   });

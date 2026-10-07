@@ -1,5 +1,6 @@
 import { ForbiddenError, InvalidTransitionError, ValidationError } from '../../../shared/domain/errors';
 import { Role } from '../../../shared/domain/role';
+import { REASON_MAX_LENGTH } from '../../../shared/domain/text';
 import { Action } from './action';
 import { ActionStatus } from './action-status';
 
@@ -76,6 +77,13 @@ describe('Action', () => {
     const action = actionIn(TO_VALIDATE);
 
     expect(() => action.rejectValidation(admin, reason, at)).toThrow(ValidationError);
+    expect(action.status).toBe(TO_VALIDATE);
+  });
+
+  it('refuse un motif trop long (D34)', () => {
+    const action = actionIn(TO_VALIDATE);
+
+    expect(() => action.rejectValidation(admin, 'a'.repeat(REASON_MAX_LENGTH + 1), at)).toThrow(ValidationError);
     expect(action.status).toBe(TO_VALIDATE);
   });
 

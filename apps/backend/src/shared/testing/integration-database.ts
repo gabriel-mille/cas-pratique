@@ -1,6 +1,8 @@
+import { ConfigModule } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';
 import { DataSource } from 'typeorm';
 import { inject } from 'vitest';
+import { validateEnvironment } from '../../app/environment';
 import { DatabaseModule } from '../../database/database.module';
 import { typeOrmOptions } from '../../database/typeorm-options';
 import { ActionPlansModule } from '../../modules/action-plans/action-plans.module';
@@ -16,6 +18,9 @@ import {
   XAVIER,
 } from './test-ids';
 
+/** Secret de test uniquement (32 caractères minimum, cf. `validateEnvironment`). */
+export const TEST_JWT_SECRET = 'integration-test-secret-not-for-production';
+
 /**
  * Monte les modules de persistance réels (TypeORM + nestjs-cls) sur la base du conteneur.
  * Chaque test vide la base avec `reset`, puis sème les parents dont il a besoin (clés étrangères).
@@ -26,6 +31,12 @@ export function useIntegrationDatabase() {
   beforeAll(async () => {
     module = await Test.createTestingModule({
       imports: [
+        // Les modules lisent leur configuration (secret JWT, throttling) : environnement de test, sans fichier .env.
+        ConfigModule.forRoot({
+          isGlobal: true,
+          ignoreEnvFile: true,
+          validate: () => validateEnvironment({ JWT_SECRET: TEST_JWT_SECRET }),
+        }),
         DatabaseModule.forRoot({
           useFactory: () => typeOrmOptions(inject('database')),
         }),
