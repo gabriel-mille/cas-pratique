@@ -11,3 +11,4 @@ Journal des demandes significatives faites à l'assistant (Claude Code), dans l'
 7. « Tu as ajouté une US (se connecter) : pourquoi celle-là et pas d'autres ? » → explication du marqueur [Implicite].
 8. Réponses aux questions Q1–Q19, avec demandes de recherche sourcée sur : suppression physique/logique dans le domaine qualité/audit (Q6), gouvernance des admins (Q10), authentification standard (Q12), modifications concurrentes (Q15), vocabulaire User/Member (Q17).
 9. Validation finale des choix → consignation dans `docs/decisions.md` (D2–D14), mise à jour des specs et rédaction des scénarios Gherkin (`docs/specs/features/`).
+10. Ajout de deux règles de méthode : « ne pas réinventer la roue, se renseigner avant d'attaquer » et « recenser et suivre les normes (sécurité, ISO, domaine santé) ; si non demandé, au moins noter et prévoir » → règles n°2 et n°3 de `AGENTS.md`.
