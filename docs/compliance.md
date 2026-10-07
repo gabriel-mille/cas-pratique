@@ -31,7 +31,7 @@ Les URLs sont dans `docs/references.md`.
 | 8.2.1 Accès par fonction | L1 | ✅ | Matrice `permissions.md` |
 | 8.2.2 Accès par donnée (IDOR/BOLA) | L1 | ✅ | Toute requête est filtrée par l'organisation du membre connecté ; un id d'une autre organisation renvoie 404 |
 | 8.4.1 Contrôles inter-organisations (cross-tenant) | L2 | ✅ | Idem ; tests dédiés |
-| 8.3.2 Changement de droits appliqué immédiatement | L2 | ❓ Q21 | Avec un JWT, le rôle doit être relu en base à chaque requête |
+| 8.3.2 Changement de droits appliqué immédiatement | L3 | ✅ | Le rôle est relu en base à chaque requête (Q21) |
 | 2.2.1, 2.2.2 Validation par liste autorisée, côté serveur | L1 | ✅ | DTO + `ValidationPipe` (`whitelist`) puis invariants du domaine |
 | 2.3.1 Respect de l'ordre des étapes | L1 | ✅ | Machine à états (`state-transitions.md`) |
 | 2.3.3 Transactions | L2 | ✅ | Changement d'état et historique écrits dans la même transaction |

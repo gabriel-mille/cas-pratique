@@ -31,7 +31,7 @@ La table ci-dessous est conservée comme trace du raisonnement.
 | # | Question | Proposition | Source |
 |---|---|---|---|
 | Q20 | Niveau de sécurité visé | ASVS **L2**, écarts justifiés par écrit (dont la MFA, prévue mais non implémentée) | ASVS 5.0 « most applications should be striving to achieve this level » ; CNIL 2022-100 §11 |
-| Q21 | Déconnexion, retrait d'un membre et changement de rôle avec un JWT | À chaque requête, relire en base l'appartenance (active, rôle) et une date `sessionsValidAfter` ; la déconnexion ou le retrait la met à jour. Jeton à durée de vie courte | ASVS 7.4.1 (accepte une « date limite par utilisateur »), 7.4.2, 8.3.2 |
+| Q21 | Déconnexion, retrait d'un membre et changement de rôle avec un JWT | À chaque requête, relire en base l'appartenance (active, rôle) et une date `sessionsValidAfter` ; la déconnexion ou le retrait la met à jour. Jeton à durée de vie courte | ASVS 7.4.1 (L1, cite « disallowing tokens produced before a per-user date and time »), 7.4.2 (L1), 8.3.2 (L3) |
 | Q22 | Limiter les tentatives de connexion | `@nestjs/throttler` (module officiel) par IP + email, sans bloquer le compte | ASVS 6.1.1, 6.3.1 (L1) ; ANSSI R10 ; CNIL §43 |
 | Q23 | Refuser les mots de passe courants | Appliquer dès la v1 avec une liste publique reconnue (source à vérifier avant de choisir) | ASVS 6.2.4 (L1) ; CNIL §37 ; NIST |
 | Q24 | Expiration des mots de passe admin | Non : ni le NIST ni l'ASVS (6.2.10) ne la recommandent ; l'ANSSI (R25) et la CNIL (§54) la permettent pour les comptes à privilèges. Divergence notée | ASVS, NIST, ANSSI, CNIL |
