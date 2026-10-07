@@ -126,6 +126,11 @@ Commandes utiles :
 - `npx nx run backend:openapi` régénère le contrat `openapi.json` sans démarrer l'API ;
 - `npx nx run frontend:generate-api` régénère ensuite les types TypeScript du front.
 
+## Limites connues
+
+- **UI/UX** : l'interface couvre tous les besoins et est accessible (WCAG 2.2 AA), mais son ergonomie n'a pas été optimisée pour l'expérience utilisateur. Ce n'était pas demandé : c'est noté comme amélioration prévue (D35).
+- Les autres écarts (bundle non découpé, `trust proxy`, en-tête `Retry-After`) sont listés en D34 et D35.
+
 ## Hooks Git
 
 Husky les installe à `npm install`. Ils tiennent lieu de CI (D27) : ne pas les contourner avec `--no-verify`.
