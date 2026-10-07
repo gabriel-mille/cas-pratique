@@ -39,16 +39,20 @@ Les URLs sont dans `docs/references.md`.
 | 6.2.5 Aucune règle de composition | L1 | ✅ | D13 |
 | 6.2.9 Au moins 64 caractères acceptés | L2 | ✅ | D13 |
 | 6.2.10 Pas de rotation périodique | L2 | ✅ | D19 (divergence ANSSI/CNIL notée) |
-| 6.2.4 Refuser les mots de passe les plus courants | **L1** | ✅ | D18 |
+| 6.2.4 Refuser les mots de passe les plus courants | **L1** | ✅ | D18 ; liste filtrée sur notre politique de longueur (D32) |
+| 6.2.3 Changer de mot de passe exige le mot de passe actuel | L1 | ✅ | `ChangePassword` (D32) |
+| 6.2.11 Refuser les mots du contexte (service, email, nom) | L2 | ✅ | Comparés au mot de passe entier (D32) |
 | 6.2.12 Vérifier contre les mots de passe ayant fuité | L2 | 🟨 | Service externe nécessaire |
 | 6.1.1, 6.3.1 Anti brute force, sans blocage malveillant | **L1** | ✅ | `@nestjs/throttler` (D17) |
 | 6.3.2 Pas de compte par défaut | L1 | ✅ | Le premier admin est créé à l'inscription |
 | 6.3.3 Authentification multifacteur | L2 | 🟨 | Écart justifié par écrit (D15) |
-| 6.3.8 Ne pas révéler si un compte existe | L3 | ✅ | Message générique (D13). L'inscription révèle qu'un email est pris : écart connu |
+| 6.3.8 Ne pas révéler si un compte existe | L3 | ✅ | Message générique (D13) et temps de réponse égalisé par un hachage factice (D32). L'inscription révèle qu'un email est pris : écart connu |
+| Vérification de possession de l'email (OWASP *Email Validation and Verification*) | – | 🟨 | Pas d'envoi d'email en v1 (D8, D32) |
 | 11.4.2 Hachage lent | – | ✅ | scrypt (D13) |
 | 7.2.1, 7.2.4 Jeton vérifié côté serveur, nouveau jeton à chaque connexion | L1 | ✅ | `@nestjs/jwt` |
 | 7.4.1 La déconnexion invalide le jeton | **L1** | ✅ | `sessionsValidAfter` par utilisateur (D16) |
-| 7.4.2 Couper les sessions d'un compte désactivé | **L1** | ✅ | Retrait d'un membre → révocation (D16) |
+| 7.4.2 Couper les sessions d'un compte désactivé | **L1** | ✅ | L'appartenance est relue à chaque requête : un membre retiré est refusé immédiatement (D16, D32) |
+| 7.4.3 Proposer de fermer les sessions après un changement de mot de passe | L2 | ✅ | Fermées d'office : `sessionsValidAfter` (D32) |
 | 7.3.1, 7.3.2 Expiration après inactivité et durée maximale | L2 | ✅ | Durée de vie courte du jeton |
 | 7.4.5 Un admin termine les sessions d'un membre | L2 | 🟨 | Mécanisme D16 prêt ; pas d'écran dédié |
 | 3.3.1–3.3.4 Cookie `__Host-`, Secure, HttpOnly, SameSite | L1-L2 | ✅ | D13 |
