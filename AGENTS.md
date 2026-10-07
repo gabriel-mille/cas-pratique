@@ -56,7 +56,7 @@ Sources : conventionalcommits.org v1.0.0, @commitlint/config-conventional, Git B
   - Body (optionnel, après une ligne vide) : explique le *pourquoi*.
 - Un commit = un changement isolé et complet. Ne pas mélanger plusieurs sujets ; découper avec `git add -p` si besoin.
 - En TDD : committer quand les tests sont verts et le code propre (après le refactor). Ne jamais committer une suite rouge.
-- Les hooks husky (commitlint, `nx affected -t lint test`, puis `build` au push) le vérifient automatiquement : ne jamais les contourner (`--no-verify` interdit). Pas de CI (D27).
+- Les hooks husky (commitlint, `nx affected -t lint typecheck test`, puis `build` au push) le vérifient automatiquement : ne jamais les contourner (`--no-verify` interdit). Pas de CI (D27).
 - Workflow GitHub flow : une branche descriptive par sujet depuis `main` (`feat/action-status-transitions`), push régulier sur `origin` (fork), PR vers `main`, suppression de la branche après merge.
 - Ne jamais pousser vers `upstream` (dépôt d'origine info-logi-sante).
 - Ne pas versionner : `.env`, `Cas pratique Qualineo.pdf`.

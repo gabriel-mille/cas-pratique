@@ -203,9 +203,10 @@ Les numéros `Qn` renvoient à `docs/specs/open-questions.md`. Les URLs des sour
 ### D27 – Vérification automatique en local, sans CI (S7, S8)
 - Choix : hooks Git avec husky 9.
   - `commit-msg` : commitlint (Conventional Commits).
-  - `pre-commit` : le hook global de l'utilisateur s'il existe (gitleaks, lychee), puis `nx affected -t lint test`.
-  - `pre-push` : `nx affected -t lint test build`.
+  - `pre-commit` : le hook global de l'utilisateur s'il existe (gitleaks, lychee), puis `nx affected -t lint typecheck test`.
+  - `pre-push` : `nx affected -t lint typecheck test build`.
 - Les hooks ne sont jamais contournés (`--no-verify` interdit).
+- `typecheck` (cible `tsc --build` inférée par `@nx/js/typescript`) est nécessaire : Vitest transpile avec SWC sans vérifier les types, donc une erreur de type dans un test passait inaperçue. Le `tsconfig.spec.json` du backend a été aligné sur celui généré pour le frontend (`module: esnext`, `moduleResolution: bundler`, référence vers `tsconfig.app.json`).
 - Seuils de couverture Vitest à 80 %. La doc Vitest ne recommande aucune valeur ; Dodds et Fowler rappellent que la couverture est un outil, pas un objectif.
 - Alternative écartée : une CI GitHub Actions, jugée inutile pour un test technique.
 

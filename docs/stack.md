@@ -77,7 +77,7 @@ Règle de travail n°2 (`AGENTS.md`) : avant de coder, chercher une solution exi
 |---|---|---|---|
 | Lib partagée | `@nx/js:library` dans `packages/` (enums, types du contrat) | ✅ | `workspaces` du `package.json` racine ; générateur Nx |
 | Couches DDD et FSD dans une même app | Nx `enforce-module-boundaries` ne contrôle que les dépendances entre projets → Steiger côté front, relecture côté back | ✅ [D] | nx.dev *Enforce module boundaries* |
-| Hooks Git | husky 9 + commitlint (`commit-msg`) ; `pre-commit` : hook global de l'utilisateur s'il existe, puis `nx affected -t lint test` ; `pre-push` : `nx affected -t lint test build` | ✅ S7 | Doc commitlint *Local setup* ; nx.dev *affected*. Husky remplace le `core.hooksPath` global : `.husky/pre-commit` le rappelle (D27) |
+| Hooks Git | husky 9 + commitlint (`commit-msg`) ; `pre-commit` : hook global de l'utilisateur s'il existe, puis `nx affected -t lint typecheck test` ; `pre-push` : `nx affected -t lint typecheck test build` | ✅ S7 | Doc commitlint *Local setup* ; nx.dev *affected*. Husky remplace le `core.hooksPath` global : `.husky/pre-commit` le rappelle (D27) |
 | CI | Aucune : tout est vérifié en local par les hooks | ❌ S8 | Choix du projet pour un test technique (D27) |
 
 ## Choix tranchés (2026-10-07)
